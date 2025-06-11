@@ -1,0 +1,52 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <!-- 🧭 Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCareSchedule"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#19486D"
+        android:elevation="4dp"
+        app:title="Lịch chăm sóc"
+        app:titleTextColor="@android:color/white"/>
+
+    <!-- 📅 Tiêu đề -->
+    <TextView
+        android:id="@+id/tvCareTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Danh sách lịch chăm sóc"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 🧾 Danh sách lịch chăm sóc -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCareList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
+
+    <!-- ➕ Nút thêm lịch chăm sóc -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddCare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="Thêm lịch"
+        app:srcCompat="@drawable/ic_add"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/teal_700"/>
+</LinearLayout>

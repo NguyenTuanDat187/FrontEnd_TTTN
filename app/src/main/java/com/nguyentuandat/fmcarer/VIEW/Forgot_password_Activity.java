@@ -1,8 +1,6 @@
 package com.nguyentuandat.fmcarer.VIEW;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,19 +10,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.nguyentuandat.fmcarer.R;
 
-public class Signin_Activity extends AppCompatActivity {
+public class Forgot_password_Activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_signin);
-        Button btnLogin = findViewById(R.id.btnRegister);
-        btnLogin.setOnClickListener(view -> {
-
-            Intent intent = new Intent(Signin_Activity.this, Login_Activity.class);
-            startActivity(intent);
-        });
+        setContentView(R.layout.forgot_password_activity);
 
     }
 }
