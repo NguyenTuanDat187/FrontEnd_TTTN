@@ -46,7 +46,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:contentDescription="Thêm lịch"
-        app:srcCompat="@drawable/ic_add"
+        app:srcCompat="@drawable/them"
         android:tint="@android:color/white"
-        app:backgroundTint="@color/teal_700"/>
+        app:backgroundTint="@color/black"/>
 </LinearLayout>

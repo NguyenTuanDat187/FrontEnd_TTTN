@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <!-- 🧒 Tiêu đề -->
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách trẻ nhỏ"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- 🧾 RecyclerView hiển thị danh sách trẻ -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChildren"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
+
+    <!-- ➕ Nút thêm trẻ -->
+    <Button
+        android:id="@+id/btnAddChild"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" Thêm trẻ mới"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:padding="12dp"/>
+</LinearLayout>

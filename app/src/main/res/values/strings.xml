@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FMCarer</string>
+    <string name="c_i_t_b_o_m_t"><![CDATA[Cài đặt & Bảo mật]]></string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+
 </resources>

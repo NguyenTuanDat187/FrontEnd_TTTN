@@ -11,10 +11,6 @@
         android:icon="@drawable/lichchamsoc"
         android:title="Lịch chăm sóc" />
 
-    <item
-        android:id="@+id/nav_community"
-        android:icon="@drawable/congdong"
-        android:title="Cộng đồng" />
 
     <item
         android:id="@+id/nav_profile"

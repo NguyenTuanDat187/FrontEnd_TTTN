@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/trangchu"
+        android:title="Trang chủ" />
+    <item
+        android:id="@+id/nav_account"
+        android:icon="@drawable/taikhoan"
+        android:title="Tài khoản" />
+    <item
+        android:id="@+id/nav_children"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="Danh sách trẻ" />
+    <item
+        android:id="@+id/nav_schedule"
+        android:icon="@drawable/lichchamsoc"
+        android:title="Lịch chăm sóc " />
+    <item
+        android:id="@+id/nav_top_up"
+        android:icon="@drawable/naptien"
+        android:title="Nạp Tiền  " />
+    <item
+        android:id="@+id/account_sub_create"
+        android:icon="@drawable/taikhoanphu"
+        android:title="Thêm tài khoản phụ " />
+</menu>

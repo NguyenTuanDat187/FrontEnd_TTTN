@@ -9,13 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.nguyentuandat.fmcarer.R;
-
-public class Home_Fragment extends Fragment {
+public class Account_Sub_Create_Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment, container, false);
+        View view = inflater.inflate(com.nguyentuandat.fmcarer.R.layout.account_sub_create_fragment, container, false);
+        // Initialize your views here
         return view;
     }
 }

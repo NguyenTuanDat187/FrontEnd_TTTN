@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- 🧒 Avatar -->
+        <ImageView
+            android:id="@+id/imgChild"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/taikhoan"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_avatar_circle"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- ℹ️ Thông tin trẻ -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textChildName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nguyễn Bé A"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/textChildAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tuổi: 5"
+                android:textSize="14sp"
+                android:textColor="@color/design_default_color_error"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:id="@+id/textChildGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giới tính: Nam"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:id="@+id/textChildRelation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quan hệ: Con trai"
+                android:textSize="14sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

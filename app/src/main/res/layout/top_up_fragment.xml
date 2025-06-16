@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="20dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 🧾 Tiêu đề -->
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💰 Nạp tiền / Gia hạn tài khoản"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 💵 Nhập số tiền -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập số tiền (VND)"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 💳 Chọn phương thức thanh toán -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phương thức thanh toán"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="12dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radioMomo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Momo"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/radioVNPay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VNPay"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/radioBank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chuyển khoản ngân hàng"
+                android:textSize="14sp" />
+        </RadioGroup>
+
+        <!-- 🔘 Nút xác nhận -->
+        <Button
+            android:id="@+id/btnTopUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiến hành thanh toán"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="32dp"
+            android:padding="14dp" />
+    </LinearLayout>
+</ScrollView>

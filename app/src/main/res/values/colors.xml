@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Màu chính -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#BDBDBD</color>
+    <color name="red">#E53935</color>
+
+    <!-- Màu thương hiệu -->
+    <color name="purple_200">#B388FF</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+
+    <!-- Màu nhấn -->
+    <color name="blue">#1E88E5</color>
+    <color name="blue_dark">#1565C0</color>
+
+    <!-- Màu nền dialog -->
+    <color name="dialogBackground">#FFFFFF</color>
+    <color name="dialogBorder">#E0E0E0</color>
+
+    <!-- Màu nút -->
+    <color name="btnBlack">#000000</color>
+    <color name="btnTextWhite">#FFFFFF</color>
+
 </resources>

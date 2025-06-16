@@ -33,14 +33,7 @@
             android:layout_height="wrap_content"
             android:hint="Họ và tên"
             app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:boxCornerRadiusTopEnd="12dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutEmail"
@@ -48,16 +41,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:endIconDrawable="@drawable/gui"
+        app:endIconMode="custom"
+        app:endIconContentDescription="Gửi mã OTP"
+        app:endIconTint="@color/black">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutPassword"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
