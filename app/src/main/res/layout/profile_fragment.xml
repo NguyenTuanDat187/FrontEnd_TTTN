@@ -12,12 +12,10 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- 👤 Ảnh đại diện + tên -->
-        <LinearLayout
+        <!-- 👤 Ảnh đại diện + tên + icon cài đặt -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_marginBottom="24dp">
 
             <ImageView
@@ -27,21 +25,36 @@
                 android:src="@drawable/taikhoan"
                 android:scaleType="centerCrop"
                 android:background="@drawable/bg_avatar_circle"
-                android:padding="2dp" />
+                android:padding="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textUserName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1"
                 android:text="Nguyễn Văn A"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
-        </LinearLayout>
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@id/imageAvatar"
+                app:layout_constraintTop_toTopOf="@id/imageAvatar"
+                app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
+                app:layout_constraintEnd_toStartOf="@id/btnSetting" />
 
-        <!-- 🟦 Tài khoản chính -->
+            <ImageView
+                android:id="@+id/btnSetting"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/caidat"
+                android:contentDescription="Cài đặt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageAvatar"
+                app:layout_constraintBottom_toBottomOf="@id/imageAvatar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 🔵 Tài khoản chính -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,10 +96,11 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 🟨 Tài khoản phụ -->
+        <!-- 🟡 Tài khoản phụ -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:radius="16dp"
             app:cardElevation="6dp"
             app:cardBackgroundColor="@android:color/white">
@@ -124,11 +138,11 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Nằm dưới phần "Tài khoản chính", "Tài khoản phụ" -->
+        <!-- ⚙️ Hành động -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="24dp"
             android:radius="16dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="@android:color/white">
@@ -142,11 +156,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/c_i_t_b_o_m_t"
+                    android:text="Cài đặt &amp; Bảo mật"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp" />
 
                 <TextView
                     android:id="@+id/btnEditProfile"
@@ -161,7 +175,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đổi mật khẩu"
-                    android:textColor="@color/material_dynamic_primary0"
+                    android:textColor="@color/black"
                     android:paddingVertical="8dp" />
 
                 <TextView
@@ -174,5 +188,16 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- 🔄 Nút cập nhật tài khoản -->
+        <Button
+            android:id="@+id/btnUpdateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật tài khoản"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:backgroundTint="@color/purple_700"
+            android:textColor="@android:color/white"
+            android:paddingVertical="12dp" />
     </LinearLayout>
 </ScrollView>
