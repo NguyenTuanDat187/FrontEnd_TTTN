@@ -8,11 +8,11 @@ public class User {
     private String created_by;
     private String balance;
     private String fullname;
-    private String phone;
+    private String numberphone;
     private String image;
     private String created_at;
 
-    public User(String _id, String email, String password, String role, String created_by, String balance, String fullname, String phone, String image, String created_at) {
+    public User(String _id, String email, String password, String role, String created_by, String balance, String fullname, String numberphone, String image, String created_at) {
         this._id = _id;
         this.email = email;
         this.password = password;
@@ -20,7 +20,7 @@ public class User {
         this.created_by = created_by;
         this.balance = balance;
         this.fullname = fullname;
-        this.phone = phone;
+        this.numberphone = numberphone;
         this.image = image;
         this.created_at = created_at;
     }
@@ -81,12 +81,12 @@ public class User {
         this.fullname = fullname;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getNumberphone() {
+        return numberphone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setNumberphone(String numberphone) {
+        this.numberphone = numberphone;
     }
 
     public String getImage() {

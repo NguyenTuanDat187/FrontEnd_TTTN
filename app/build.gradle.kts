@@ -48,6 +48,10 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
     implementation( "com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    // Glide (hiển thị ảnh từ URL)
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 
 

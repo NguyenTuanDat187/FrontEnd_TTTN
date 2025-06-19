@@ -12,11 +12,11 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- 👤 Ảnh đại diện + tên + icon cài đặt -->
+        <!-- 👤 Avatar + Tên + Cài đặt -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="20dp">
 
             <ImageView
                 android:id="@+id/imageAvatar"
@@ -26,18 +26,20 @@
                 android:scaleType="centerCrop"
                 android:background="@drawable/bg_avatar_circle"
                 android:padding="2dp"
+                android:contentDescription="Avatar người dùng"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
                 android:id="@+id/textUserName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:text="Nguyễn Văn A"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
+                android:layout_marginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/imageAvatar"
                 app:layout_constraintTop_toTopOf="@id/imageAvatar"
                 app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
@@ -49,9 +51,9 @@
                 android:layout_height="24dp"
                 android:src="@drawable/caidat"
                 android:contentDescription="Cài đặt"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/imageAvatar"
-                app:layout_constraintBottom_toBottomOf="@id/imageAvatar" />
+                app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- 🔵 Tài khoản chính -->
@@ -138,7 +140,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- ⚙️ Hành động -->
+        <!-- ⚙️ Cài đặt & Bảo mật -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,16 +190,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 🔄 Nút cập nhật tài khoản -->
-        <Button
-            android:id="@+id/btnUpdateAccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cập nhật tài khoản"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:backgroundTint="@color/purple_700"
-            android:textColor="@android:color/white"
-            android:paddingVertical="12dp" />
+        <!-- 🔄 Button cập nhật -->
+
     </LinearLayout>
 </ScrollView>

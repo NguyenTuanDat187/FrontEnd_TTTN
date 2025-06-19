@@ -1,10 +1,13 @@
 package com.nguyentuandat.fmcarer.VIEW;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,19 +17,22 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserRequest;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserResponse;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
+import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Login_Activity extends AppCompatActivity {
 
     private TextInputEditText edtLoginEmail, edtLoginPassword;
     private Button btnLogin;
-    private TextView txtGoToRegister;
+    private TextView txtGoToRegister, txtForgotPassword;
+    private CheckBox checkboxRemember;
+
+    private SharedPreferences sharedPreferences;
+    private static final String PREF_NAME = "login_prefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,11 @@ public class Login_Activity extends AppCompatActivity {
         edtLoginPassword = findViewById(R.id.edtLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtGoToRegister = findViewById(R.id.txtGoToRegister);
+        txtForgotPassword = findViewById(R.id.txtForgotPassword);
+        checkboxRemember = findViewById(R.id.checkboxRemember);
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        loadSavedCredentials();
 
         btnLogin.setOnClickListener(view -> {
             String email = edtLoginEmail.getText().toString().trim();
@@ -46,48 +57,73 @@ public class Login_Activity extends AppCompatActivity {
                 edtLoginEmail.setError("Email không hợp lệ");
                 return;
             }
+
             if (password.length() < 6) {
                 edtLoginPassword.setError("Mật khẩu phải từ 6 ký tự");
                 return;
             }
 
+            if (checkboxRemember.isChecked()) {
+                saveCredentials(email, password);
+            } else {
+                clearCredentials();
+            }
+
             loginUser(email, password);
         });
 
-        txtGoToRegister.setOnClickListener(view -> {
+        txtGoToRegister.setOnClickListener(v -> {
             startActivity(new Intent(Login_Activity.this, Signin_Activity.class));
             finish();
         });
+
+        txtForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(Login_Activity.this, Forgot_password_Activity.class);
+            startActivity(intent);
+        });
+
+        String receivedEmail = getIntent().getStringExtra("email");
+        if (receivedEmail != null) {
+            edtLoginEmail.setText(receivedEmail);
+            edtLoginPassword.requestFocus();
+        }
     }
 
     private void loginUser(String email, String password) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:6000/") // đổi IP nếu chạy trên thiết bị thật
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ApiService apiService = retrofit.create(ApiService.class);
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
         UserRequest request = new UserRequest(email, password);
 
         apiService.loginUser(request).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                Log.d("API_LOGIN", "Status code: " + response.code());
-
-                if (response.body() != null) {
-                    Log.d("API_LOGIN", "Success: " + response.body().isSuccess());
-                    Log.d("API_LOGIN", "Message: " + response.body().getMessage());
-
-                    if (response.body().getUser() != null) {
-                        Log.d("API_LOGIN", "User Email: " + response.body().getUser().getEmail());
-                        Log.d("API_LOGIN", "User Verified: " + response.body().getUser().isVerified());
-                    }
-                }
-
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(Login_Activity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Login_Activity.this, Dashboar_Activity.class));
-                    finish();
+                    UserResponse.UserData user = response.body().getUser();
+
+                    if (user != null && user.getId() != null) {
+                        SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
+                        editor.putString("_id", user.getId());
+                        editor.putString("fullname", user.getFullname());
+                        editor.putString("numberphone", user.getNumberphone());
+                        editor.putString("image", user.getImage());
+                        editor.putString("email", user.getEmail());
+                        editor.apply();
+
+                        Log.d("LOGIN_SUCCESS", "User ID: " + user.getId());
+
+                        // Kiểm tra thông tin đã đầy đủ chưa
+                        boolean isInfoComplete = user.getFullname() != null && !user.getFullname().isEmpty()
+                                && user.getNumberphone() != null && !user.getNumberphone().isEmpty()
+                                && user.getImage() != null && !user.getImage().isEmpty();
+
+                        Intent intent = new Intent(Login_Activity.this, Dashboar_Activity.class);
+                        intent.putExtra("showDialog", !isInfoComplete); // true nếu thiếu thông tin
+                        startActivity(intent);
+                        finish();
+
+                        Toast.makeText(Login_Activity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Login_Activity.this, "Lỗi dữ liệu người dùng", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(Login_Activity.this, "Tài khoản hoặc mật khẩu sai!", Toast.LENGTH_SHORT).show();
                 }
@@ -99,5 +135,28 @@ public class Login_Activity extends AppCompatActivity {
                 Toast.makeText(Login_Activity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void saveCredentials(String email, String password) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.putBoolean("remember", true);
+        editor.apply();
+    }
+
+    private void loadSavedCredentials() {
+        boolean remember = sharedPreferences.getBoolean("remember", false);
+        if (remember) {
+            edtLoginEmail.setText(sharedPreferences.getString("email", ""));
+            edtLoginPassword.setText(sharedPreferences.getString("password", ""));
+            checkboxRemember.setChecked(true);
+        }
+    }
+
+    private void clearCredentials() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }

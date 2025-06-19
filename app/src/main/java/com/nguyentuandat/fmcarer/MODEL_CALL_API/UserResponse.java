@@ -29,6 +29,10 @@ public class UserResponse {
         @SerializedName("isVerified")
         private boolean verified;
 
+        private String fullname;
+        private String numberphone;
+        private String image;
+
         public String getId() {
             return id;
         }
@@ -44,5 +48,18 @@ public class UserResponse {
         public boolean isVerified() {
             return verified;
         }
+
+        public String getFullname() {
+            return fullname;
+        }
+
+        public String getNumberphone() {
+            return numberphone;
+        }
+
+        public String getImage() {
+            return image;
+        }
     }
+
 }
