@@ -6,6 +6,7 @@ public class UserResponse {
     private boolean success;
     private String message;
     private UserData user;
+    private String imageUrl; // ✅
 
     public boolean isSuccess() {
         return success;
@@ -17,6 +18,9 @@ public class UserResponse {
 
     public UserData getUser() {
         return user;
+    }
+    public String getImageUrl() { // ✅ Getter cho imageUrl
+        return imageUrl;
     }
 
     public static class UserData {

@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/mau_nen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -31,6 +32,7 @@
 
     <!-- 🧾 Danh sách lịch chăm sóc -->
     <androidx.recyclerview.widget.RecyclerView
+
         android:id="@+id/recyclerCareList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,5 +50,5 @@
         android:contentDescription="Thêm lịch"
         app:srcCompat="@drawable/them"
         android:tint="@android:color/white"
-        app:backgroundTint="@color/black"/>
+        app:backgroundTint="@color/mau_button"/>
 </LinearLayout>

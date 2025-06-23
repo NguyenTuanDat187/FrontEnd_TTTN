@@ -3,8 +3,6 @@ package com.nguyentuandat.fmcarer.VIEW;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -44,8 +43,8 @@ public class Dashboar_Activity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1001;
     private Uri selectedImageUri;
     private ImageView imgAvatar;
+    private TextView toolbarTitle;
 
-    // Header view
     private ImageView navAvatar;
     private TextView navUsername, navEmail;
 
@@ -56,17 +55,18 @@ public class Dashboar_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+       // toolbarTitle = findViewById(R.id.toolbarTitle); // 📌 TextView trong Toolbar
+        setSupportActionBar(toolbar);
+
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        setSupportActionBar(toolbar);
 
-        // Drawer toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Gán view từ nav_header.xml
+        // Gán view header
         View headerView = navigationView.getHeaderView(0);
         navAvatar = headerView.findViewById(R.id.imgAvatar);
         navUsername = headerView.findViewById(R.id.txtUsername);
@@ -77,13 +77,13 @@ public class Dashboar_Activity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                replaceFragment(new Home_Fragment());
+                replaceFragment(new Home_Fragment(), "Trang chủ");
             } else if (id == R.id.account_sub_create) {
-                replaceFragment(new Account_Sub_Create_Fragment());
+                replaceFragment(new Account_Sub_Create_Fragment(), "Tạo tài khoản phụ");
             } else if (id == R.id.nav_schedule) {
-                replaceFragment(new Care_schedule_Fragment());
+                replaceFragment(new Care_schedule_Fragment(), "Lịch chăm sóc");
             } else if (id == R.id.nav_profile) {
-                replaceFragment(new Profile_Fragment());
+                replaceFragment(new Profile_Fragment(), "Thông tin cá nhân");
             }
             return true;
         });
@@ -92,27 +92,29 @@ public class Dashboar_Activity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_top_up) {
-                replaceFragment(new Top_Up_Fragment());
+                replaceFragment(new Top_Up_Fragment(), "Nạp tiền");
             } else if (id == R.id.nav_schedule) {
-                replaceFragment(new Care_schedule_Fragment());
+                replaceFragment(new Care_schedule_Fragment(), "Lịch chăm sóc");
             } else if (id == R.id.nav_home) {
-                replaceFragment(new Home_Fragment());
+                replaceFragment(new Home_Fragment(), "Trang chủ");
             } else if (id == R.id.account_sub_create) {
-                replaceFragment(new Account_Sub_Create_Fragment());
+                replaceFragment(new Account_Sub_Create_Fragment(), "Tạo tài khoản phụ");
             } else if (id == R.id.nav_account) {
-                replaceFragment(new Profile_Fragment());
+                replaceFragment(new Profile_Fragment(), "Thông tin cá nhân");
+            } else if (id == R.id.nav_children) {
+                replaceFragment(new Children_List_Fragment(), "Trẻ đang theo dõi");
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
-        // Mở màn hình đầu tiên
+        // Load màn đầu
         if (savedInstanceState == null) {
-            replaceFragment(new Home_Fragment());
+            replaceFragment(new Home_Fragment(), "Trang chủ");
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
-        // Hiện dialog cập nhật nếu thiếu thông tin
+        // Gợi ý cập nhật nếu thiếu info
         SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
         String fullname = prefs.getString("fullname", "");
         String phone = prefs.getString("numberphone", "");
@@ -132,18 +134,18 @@ public class Dashboar_Activity extends AppCompatActivity {
         navUsername.setText(name);
         navEmail.setText(email);
         if (!image.isEmpty()) {
-            Glide.with(this)
-                    .load(image)
-                    .placeholder(R.drawable.taikhoan)
-                    .error(R.drawable.taikhoan)
-                    .into(navAvatar);
+            Glide.with(this).load(image).placeholder(R.drawable.taikhoan).error(R.drawable.taikhoan).into(navAvatar);
         }
     }
 
-    private void replaceFragment(androidx.fragment.app.Fragment fragment) {
+    // 📌 Thêm title fragment vào đây
+    private void replaceFragment(androidx.fragment.app.Fragment fragment, String title) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
+        if (toolbarTitle != null) {
+            toolbarTitle.setText(title);
+        }
     }
 
     private void showUpdateDialog() {
@@ -152,7 +154,7 @@ public class Dashboar_Activity extends AppCompatActivity {
         dialog.setCancelable(true);
 
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_background));
             WindowManager.LayoutParams params = new WindowManager.LayoutParams();
             params.copyFrom(dialog.getWindow().getAttributes());
             params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
@@ -213,14 +215,13 @@ public class Dashboar_Activity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         Toast.makeText(Dashboar_Activity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
 
-                        // Lưu vào SharedPreferences
                         prefs.edit()
                                 .putString("fullname", name)
                                 .putString("numberphone", phone)
                                 .putString("image", imageUrl)
                                 .apply();
 
-                        loadHeaderData(); // cập nhật lại avatar & name trong Navigation Header
+                        loadHeaderData();
                         dialog.dismiss();
                     } else {
                         Toast.makeText(Dashboar_Activity.this, "Lỗi cập nhật", Toast.LENGTH_SHORT).show();

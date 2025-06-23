@@ -3,67 +3,76 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/mau_nen"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <!-- 👤 Avatar + Tên + Cài đặt -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            app:cardBackgroundColor="@color/mau_nen"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp"
+            android:radius="16dp">
 
-            <ImageView
-                android:id="@+id/imageAvatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/taikhoan"
-                android:scaleType="centerCrop"
-                android:background="@drawable/bg_avatar_circle"
-                android:padding="2dp"
-                android:contentDescription="Avatar người dùng"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-            <TextView
-                android:id="@+id/textUserName"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nguyễn Văn A"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toEndOf="@id/imageAvatar"
-                app:layout_constraintTop_toTopOf="@id/imageAvatar"
-                app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
-                app:layout_constraintEnd_toStartOf="@id/btnSetting" />
+                android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/btnSetting"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/caidat"
-                android:contentDescription="Cài đặt"
-                app:layout_constraintTop_toTopOf="@id/imageAvatar"
-                app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
-                app:layout_constraintEnd_toEndOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/taikhoan"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:padding="2dp"
+                    android:contentDescription="Avatar người dùng"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <TextView
+                    android:id="@+id/textUserName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toEndOf="@id/imageAvatar"
+                    app:layout_constraintTop_toTopOf="@id/imageAvatar"
+                    app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
+                    app:layout_constraintEnd_toStartOf="@id/btnSetting" />
+
+                <ImageView
+                    android:id="@+id/btnSetting"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/caidat"
+                    android:contentDescription="Cài đặt"
+                    app:layout_constraintTop_toTopOf="@id/imageAvatar"
+                    app:layout_constraintBottom_toBottomOf="@id/imageAvatar"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- 🔵 Tài khoản chính -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
             android:radius="16dp"
-            app:cardElevation="6dp"
-            app:cardBackgroundColor="@android:color/white">
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/mau_nen">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,7 +87,15 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/textFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên: Nguyễn Văn A"
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/textEmail"
@@ -102,10 +119,10 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
             android:radius="16dp"
-            app:cardElevation="6dp"
-            app:cardBackgroundColor="@android:color/white">
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/mau_nen">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,7 +137,15 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/textSubFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên: Trần B"
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/textSubEmail"
@@ -144,10 +169,11 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="24dp"
             android:radius="16dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@android:color/white">
+            app:cardBackgroundColor="@color/mau_nen">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -189,8 +215,6 @@
                     android:paddingVertical="8dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- 🔄 Button cập nhật -->
 
     </LinearLayout>
 </ScrollView>

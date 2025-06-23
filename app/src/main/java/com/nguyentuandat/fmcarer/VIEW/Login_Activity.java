@@ -50,11 +50,11 @@ public class Login_Activity extends AppCompatActivity {
         loadSavedCredentials();
 
         btnLogin.setOnClickListener(view -> {
-            String email = edtLoginEmail.getText().toString().trim();
+            String input = edtLoginEmail.getText().toString().trim();
             String password = edtLoginPassword.getText().toString().trim();
 
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                edtLoginEmail.setError("Email không hợp lệ");
+            if (input.isEmpty()) {
+                edtLoginEmail.setError("Vui lòng nhập email hoặc số điện thoại");
                 return;
             }
 
@@ -64,12 +64,12 @@ public class Login_Activity extends AppCompatActivity {
             }
 
             if (checkboxRemember.isChecked()) {
-                saveCredentials(email, password);
+                saveCredentials(input, password);
             } else {
                 clearCredentials();
             }
 
-            loginUser(email, password);
+            loginUser(input, password);
         });
 
         txtGoToRegister.setOnClickListener(v -> {
@@ -89,9 +89,15 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    private void loginUser(String email, String password) {
+    private void loginUser(String input, String password) {
         ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
-        UserRequest request = new UserRequest(email, password);
+        UserRequest request = new UserRequest(null, password);
+
+        if (Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+            request.setEmail(input);
+        } else {
+            request.setNumberphone(input);
+        }
 
         apiService.loginUser(request).enqueue(new Callback<UserResponse>() {
             @Override
@@ -100,23 +106,33 @@ public class Login_Activity extends AppCompatActivity {
                     UserResponse.UserData user = response.body().getUser();
 
                     if (user != null && user.getId() != null) {
+                        if ("parent".equals(user.getRole()) && (user.getEmail() == null || user.getEmail().isEmpty())) {
+                            Toast.makeText(Login_Activity.this, "Tài khoản phụ huynh phải đăng nhập bằng email", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // ✅ Lưu vào USER (để dùng chung)
                         SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
                         editor.putString("_id", user.getId());
                         editor.putString("fullname", user.getFullname());
                         editor.putString("numberphone", user.getNumberphone());
                         editor.putString("image", user.getImage());
                         editor.putString("email", user.getEmail());
+                        editor.putString("role", user.getRole());
                         editor.apply();
+
+                        // ✅ Lưu riêng parentId để sử dụng cho subuser
+                        SharedPreferences pref = getSharedPreferences("USER_PREF", MODE_PRIVATE);
+                        pref.edit().putString("userId", user.getId()).apply();
 
                         Log.d("LOGIN_SUCCESS", "User ID: " + user.getId());
 
-                        // Kiểm tra thông tin đã đầy đủ chưa
                         boolean isInfoComplete = user.getFullname() != null && !user.getFullname().isEmpty()
                                 && user.getNumberphone() != null && !user.getNumberphone().isEmpty()
                                 && user.getImage() != null && !user.getImage().isEmpty();
 
                         Intent intent = new Intent(Login_Activity.this, Dashboar_Activity.class);
-                        intent.putExtra("showDialog", !isInfoComplete); // true nếu thiếu thông tin
+                        intent.putExtra("showDialog", !isInfoComplete);
                         startActivity(intent);
                         finish();
 

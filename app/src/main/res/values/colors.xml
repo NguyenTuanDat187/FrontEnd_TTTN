@@ -20,7 +20,16 @@
     <color name="dialogBorder">#E0E0E0</color>
 
     <!-- Màu nút -->
-    <color name="btnBlack">#000000</color>
-    <color name="btnTextWhite">#FFFFFF</color>
+
+
+    <color name="light_hint">#777777</color>
+    <color name="mau_nen">#EEE0FF</color>
+    <color name="mau_button">#722DD3</color>
+    <color name="mau_fragment">#C2BAE3</color>
+    <color name="mau_item">#F4BCBC</color>
+    <color name="mau_edittext">#9056E2</color>
+
+    //
+
 
 </resources>
