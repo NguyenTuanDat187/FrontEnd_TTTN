@@ -55,7 +55,7 @@ public class Dashboar_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-       // toolbarTitle = findViewById(R.id.toolbarTitle); // 📌 TextView trong Toolbar
+        toolbarTitle = findViewById(R.id.toolbarTitle); // 📌 TextView trong Toolbar
         setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);

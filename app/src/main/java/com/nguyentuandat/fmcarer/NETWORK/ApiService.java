@@ -2,6 +2,7 @@ package com.nguyentuandat.fmcarer.NETWORK;
 
 import com.nguyentuandat.fmcarer.MODEL.Children;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.ApiResponse;
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.ChildrenResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpRequest;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserRequest;
@@ -52,7 +53,8 @@ public interface ApiService {
     // 🔍 [GET] Lấy danh sách trẻ theo userId
     // Gửi userId lên để lấy danh sách các trẻ thuộc tài khoản đó
     @GET("/api/children/{userId}")
-    Call<List<Children>> getChildrenByUser(@Path("userId") String userId);
+    Call<ChildrenResponse> getChildrenByUser(@Path("userId") String userId);
+
 
     // ➕ [POST] Thêm trẻ mới
     // Gửi object Children dạng JSON lên để thêm mới vào hệ thống
@@ -68,4 +70,5 @@ public interface ApiService {
     // Truyền childId cần xóa
     @DELETE("/api/children/{childId}")
     Call<Void> deleteChild(@Path("childId") String childId);
+
 }

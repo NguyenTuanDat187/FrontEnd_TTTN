@@ -21,9 +21,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#19486D"
-            app:title="FMCarer"
             app:titleTextColor="@android:color/white"
             android:elevation="4dp" >
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:id="@+id/toolbarTitle"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textStyle="bold"/>
+
 
         </androidx.appcompat.widget.Toolbar>
 

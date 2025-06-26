@@ -1,5 +1,6 @@
 package com.nguyentuandat.fmcarer.FRAGMENT;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -25,12 +25,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.ADAPTER.Children_ADAPTER;
 import com.nguyentuandat.fmcarer.MODEL.Children;
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.ChildrenResponse;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
 
 import java.util.Calendar;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +54,18 @@ public class Children_List_Fragment extends Fragment {
         adapter = new Children_ADAPTER(getContext());
         recyclerView.setAdapter(adapter);
 
+        adapter.setOnChildActionListener(new Children_ADAPTER.OnChildActionListener() {
+            @Override
+            public void onEditChild(Children child) {
+                showAddOrUpdateDialog(child);
+            }
+
+            @Override
+            public void onDeleteChild(Children child) {
+                showDeleteConfirmation(child);
+            }
+        });
+
         loadChildrenList();
 
         btnAddChild.setOnClickListener(v -> showAddOrUpdateDialog(null));
@@ -66,18 +78,18 @@ public class Children_List_Fragment extends Fragment {
         String userId = prefs.getString("_id", "");
 
         ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
-        apiService.getChildrenByUser(userId).enqueue(new Callback<List<Children>>() {
+        apiService.getChildrenByUser(userId).enqueue(new Callback<ChildrenResponse>() {
             @Override
-            public void onResponse(Call<List<Children>> call, Response<List<Children>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    adapter.setData(response.body());
+            public void onResponse(Call<ChildrenResponse> call, Response<ChildrenResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    adapter.setData(response.body().getData());
                 } else {
                     Toast.makeText(getContext(), "Không có dữ liệu trẻ em", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Children>> call, Throwable t) {
+            public void onFailure(Call<ChildrenResponse> call, Throwable t) {
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -104,11 +116,10 @@ public class Children_List_Fragment extends Fragment {
         MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
 
         if (edtName == null || edtDob == null || genderGroup == null || btnSave == null || btnCancel == null) {
-            Toast.makeText(getContext(), "Không thể hiển thị form, thiếu layout", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Không thể hiển thị form", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Hiển thị DatePicker khi click vào edtDob
         edtDob.setOnClickListener(v -> showDatePickerDialog(edtDob));
 
         if (childToEdit != null) {
@@ -161,7 +172,7 @@ public class Children_List_Fragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (view, year, month, dayOfMonth) -> {
-                    String selectedDate = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
+                    String selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
                     edtDob.setText(selectedDate);
                 },
                 calendar.get(Calendar.YEAR),
@@ -217,4 +228,34 @@ public class Children_List_Fragment extends Fragment {
             }
         });
     }
+
+    private void showDeleteConfirmation(Children child) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa trẻ này không?")
+                .setPositiveButton("Xóa", (dialog, which) -> deleteChildFromServer(child.get_id()))
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void deleteChildFromServer(String childId) {
+        ApiService api = RetrofitClient.getInstance().create(ApiService.class);
+        api.deleteChild(childId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Đã xóa", Toast.LENGTH_SHORT).show();
+                    loadChildrenList();
+                } else {
+                    Toast.makeText(getContext(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
