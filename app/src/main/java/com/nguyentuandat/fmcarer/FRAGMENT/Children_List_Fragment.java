@@ -30,7 +30,9 @@ import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +43,7 @@ public class Children_List_Fragment extends Fragment {
     private RecyclerView recyclerView;
     private Children_ADAPTER adapter;
     private FloatingActionButton btnAddChild;
+    private List<Children> childrenList = new ArrayList<>(); // ✅ Danh sách trẻ
 
     @Nullable
     @Override
@@ -73,6 +76,11 @@ public class Children_List_Fragment extends Fragment {
         return view;
     }
 
+    // ✅ Phương thức để lấy danh sách trẻ ở ngoài Fragment khác
+    public List<Children> getChildrenList() {
+        return childrenList;
+    }
+
     private void loadChildrenList() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
         String userId = prefs.getString("_id", "");
@@ -82,7 +90,8 @@ public class Children_List_Fragment extends Fragment {
             @Override
             public void onResponse(Call<ChildrenResponse> call, Response<ChildrenResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    adapter.setData(response.body().getData());
+                    childrenList = response.body().getData();  // ✅ Lưu vào biến toàn cục
+                    adapter.setData(childrenList);
                 } else {
                     Toast.makeText(getContext(), "Không có dữ liệu trẻ em", Toast.LENGTH_SHORT).show();
                 }
@@ -257,5 +266,4 @@ public class Children_List_Fragment extends Fragment {
             }
         });
     }
-
 }

@@ -39,36 +39,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguyễn Bé Na"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textSize="19sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tvChildGender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Giới tính: Nữ"
-                android:textSize="14sp"
-                android:textColor="@color/gray" />
+                android:textSize="17sp"
+            android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tvChildDOB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ngày sinh: 20/02/2020"
-                android:textSize="14sp"
-                android:textColor="@color/gray" />
+                android:textSize="17sp"
+            android:textColor="@color/black" />
+
             <TextView
                 android:id="@+id/tvCreatedAt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Thêm lúc: 01/06/2025"
-                android:textSize="12sp"
-                android:textColor="@color/gray" />
+                android:textSize="15sp"
+            android:textColor="@color/black" />
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

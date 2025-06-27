@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.nguyentuandat.fmcarer.VIEW.Dashboar_Activity;
+import com.nguyentuandat.fmcarer.VIEW.Login_Activity;
 import com.nguyentuandat.fmcarer.VIEW.Signin_Activity;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, Signin_Activity.class);
+                Intent intent = new Intent(MainActivity.this, Login_Activity.class);
                 startActivity(intent);
             }
         }, 1000);

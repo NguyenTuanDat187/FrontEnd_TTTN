@@ -9,22 +9,15 @@
     android:padding="16dp">
 
     <!-- 🧭 Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarCareSchedule"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#19486D"
-        android:elevation="4dp"
-        app:title="Lịch chăm sóc"
-        app:titleTextColor="@android:color/white"/>
 
     <!-- 📅 Tiêu đề -->
     <TextView
+        android:gravity="center"
         android:id="@+id/tvCareTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Danh sách lịch chăm sóc"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_marginTop="12dp"
