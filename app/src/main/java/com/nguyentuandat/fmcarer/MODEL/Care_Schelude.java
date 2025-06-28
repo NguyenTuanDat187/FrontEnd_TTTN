@@ -31,6 +31,9 @@ public class Care_Schelude {
     @SerializedName("repeat_type")
     private String repeatType;
 
+    @SerializedName("is_completed")
+    private boolean completed;
+
     // ✅ Getters and Setters
     public String getId() {
         return id;
@@ -102,5 +105,13 @@ public class Care_Schelude {
 
     public void setRepeatType(String repeatType) {
         this.repeatType = repeatType;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

@@ -128,7 +128,8 @@ public class Care_schedule_Fragment extends Fragment {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.diglog_create_care_schelude, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
-        dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
+    dialog.show();
 
         Spinner spinnerChild = dialogView.findViewById(R.id.spinner_child);
         TextInputEditText edtNote = dialogView.findViewById(R.id.edt_note);

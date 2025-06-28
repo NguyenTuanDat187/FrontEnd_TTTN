@@ -90,5 +90,7 @@ public interface ApiService {
     // ❌ Xóa reminder theo ID
     @DELETE("/api/reminders/{id}")
     Call<ApiResponse> deleteReminder(@Path("id") String reminderId);
+    @PUT("api/reminders/{id}/complete")
+    Call<SingleCareScheludeResponse> completeReminder(@Path("id") String id);
 
 }

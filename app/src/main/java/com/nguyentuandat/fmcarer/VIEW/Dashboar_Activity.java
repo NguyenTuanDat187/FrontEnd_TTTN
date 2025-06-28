@@ -56,6 +56,7 @@ public class Dashboar_Activity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbarTitle = findViewById(R.id.toolbarTitle); // 📌 TextView trong Toolbar
+        toolbar.setTitle(""); // Xóa tiêu đề mặc định của Toolbar
         setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
@@ -145,6 +146,11 @@ public class Dashboar_Activity extends AppCompatActivity {
                 .commit();
         if (toolbarTitle != null) {
             toolbarTitle.setText(title);
+        }
+        else {
+
+
+
         }
     }
 
