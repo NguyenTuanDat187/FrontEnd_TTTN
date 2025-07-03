@@ -12,7 +12,7 @@ public class User {
     private String image;
     private String created_at;
 
-    public User(String _id, String email, String password, String role, String created_by, String balance, String fullname, String numberphone, String image, String created_at) {
+    public User() {
         this._id = _id;
         this.email = email;
         this.password = password;

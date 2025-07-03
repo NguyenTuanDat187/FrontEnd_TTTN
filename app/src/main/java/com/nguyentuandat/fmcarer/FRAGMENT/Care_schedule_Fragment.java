@@ -99,7 +99,10 @@ public class Care_schedule_Fragment extends Fragment {
     }
 
     private void loadSchedules() {
-        apiService.getAllReminders().enqueue(new Callback<CareScheludeResponse>() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
+        String userId = prefs.getString("_id", "");
+
+        apiService.getAllReminders(userId).enqueue(new Callback<CareScheludeResponse>() {
             @Override
             public void onResponse(@NonNull Call<CareScheludeResponse> call, @NonNull Response<CareScheludeResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -117,6 +120,7 @@ public class Care_schedule_Fragment extends Fragment {
             }
         });
     }
+
 
     private void openCreateReminderDialog() {
         if (childList.isEmpty()) {
@@ -187,6 +191,9 @@ public class Care_schedule_Fragment extends Fragment {
         });
 
         btnCreate.setOnClickListener(v -> {
+            SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
+            String userId = prefs.getString("_id", "");
+
             String type = spinnerType.getSelectedItem().toString();
             String note = edtNote.getText().toString().trim();
             String customType = edtCustomType.getText().toString().trim();
@@ -201,6 +208,7 @@ public class Care_schedule_Fragment extends Fragment {
             }
 
             Map<String, Object> data = new HashMap<>();
+            data.put("user_id", userId);
             data.put("child_id", selectedChildId);
             data.put("type", type);
             if (type.equals("other")) data.put("custom_type", customType);

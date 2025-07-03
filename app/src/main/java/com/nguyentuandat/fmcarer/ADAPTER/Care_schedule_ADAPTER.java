@@ -65,11 +65,18 @@ public class Care_schedule_ADAPTER extends RecyclerView.Adapter<Care_schedule_AD
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Care_Schelude schedule = displayList.get(position);
 
-        holder.tvChildName.setText(schedule.getChild().getName());
+        // Hiển thị tên trẻ an toàn
+        if (schedule.getChild() != null && schedule.getChild().getName() != null) {
+            holder.tvChildName.setText(schedule.getChild().getName());
+        } else {
+            holder.tvChildName.setText("Trẻ đã bị xóa");
+        }
+
         String type = schedule.getType().equals("other") && schedule.getCustomType() != null
                 ? schedule.getCustomType()
                 : getTypeLabel(schedule.getType());
@@ -86,23 +93,31 @@ public class Care_schedule_ADAPTER extends RecyclerView.Adapter<Care_schedule_AD
                 : "Không lặp lại";
         holder.tvRepeat.setText(repeatText);
 
-        Glide.with(context)
-                .load(schedule.getChild().getAvatar_url())
-                .placeholder(R.drawable.taikhoan)
-                .circleCrop()
-                .into(holder.imgChild);
+        // Load avatar an toàn
+        if (schedule.getChild() != null && schedule.getChild().getAvatar_url() != null) {
+            Glide.with(context)
+                    .load(schedule.getChild().getAvatar_url())
+                    .placeholder(R.drawable.taikhoan)
+                    .circleCrop()
+                    .into(holder.imgChild);
+        } else {
+            Glide.with(context)
+                    .load(R.drawable.taikhoan)
+                    .circleCrop()
+                    .into(holder.imgChild);
+        }
 
-        // Xử lý giữ lâu 1.5 giây
+        // Xử lý giữ lâu
         holder.itemView.setOnLongClickListener(v -> {
             v.postDelayed(() -> showOptionsDialog(schedule, position), 1500);
             return true;
         });
 
-        // ====== XỬ LÝ NÚT HOÀN THÀNH ======
+        // Xử lý nút hoàn thành
         if (schedule.isCompleted()) {
             holder.tvComplete.setText("Đã hoàn thành");
             holder.tvComplete.setEnabled(false);
-            holder.tvComplete.setAlpha(0.6f); // làm mờ nút
+            holder.tvComplete.setAlpha(0.6f);
         } else {
             holder.tvComplete.setText("Hoàn thành");
             holder.tvComplete.setEnabled(true);
@@ -113,15 +128,12 @@ public class Care_schedule_ADAPTER extends RecyclerView.Adapter<Care_schedule_AD
                         .setTitle("Xác nhận hoàn thành")
                         .setMessage("Bạn có chắc chắn đã hoàn thành nhắc nhở này?")
                         .setPositiveButton("Chắc chắn", (dialog, which) -> {
-
-                            // Gọi API hoàn thành nhắc nhở
                             apiService.completeReminder(schedule.getId())
                                     .enqueue(new Callback<SingleCareScheludeResponse>() {
                                         @Override
                                         public void onResponse(@NonNull Call<SingleCareScheludeResponse> call, @NonNull Response<SingleCareScheludeResponse> response) {
                                             if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                                                Care_Schelude updated = response.body().getData();
-                                                schedule.setCompleted(true); // cập nhật local
+                                                schedule.setCompleted(true);
                                                 notifyItemChanged(position);
                                                 Toast.makeText(context, "Đã đánh dấu hoàn thành", Toast.LENGTH_SHORT).show();
                                             } else {
@@ -134,14 +146,13 @@ public class Care_schedule_ADAPTER extends RecyclerView.Adapter<Care_schedule_AD
                                             Toast.makeText(context, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-
                         })
                         .setNegativeButton("Chưa", null)
                         .show();
             });
         }
-
     }
+
 
 
     private void showOptionsDialog(Care_Schelude schedule, int position) {

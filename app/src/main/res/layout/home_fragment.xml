@@ -1,41 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="@color/mau_nen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
     android:padding="12dp">
 
-    <!-- ✏️ Ô đăng bài -->
-    <androidx.cardview.widget.CardView
+    <!-- Ô tạo bài viết -->
+    <LinearLayout
+        android:id="@+id/layoutCreatePost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:radius="12dp"
-        app:cardElevation="4dp">
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@drawable/bg_dialog_rounded"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
 
-        <EditText
-            android:id="@+id/editTextPost"
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/taikhoan"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_circle_blue"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/textViewCreatePost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Bạn đang nghĩ gì?"
-            android:padding="12dp"
-            android:background="@android:color/transparent"
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:scrollbars="vertical" />
-    </androidx.cardview.widget.CardView>
+            android:text="Bạn đang nghĩ gì?"
+            android:textColor="@color/gray"
+            android:textSize="15sp"
+            android:background="@drawable/bg_dialog_rounded"
+            android:padding="10dp"
+            android:gravity="center_vertical" />
+    </LinearLayout>
 
-    <!-- 📃 Danh sách bài đăng -->
+    <!-- Danh sách bài viết -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCommunityPosts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:nestedScrollingEnabled="true"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
-        android:scrollbars="vertical"/>
+        android:paddingBottom="12dp"
+        android:nestedScrollingEnabled="true"/>
+
 </LinearLayout>
