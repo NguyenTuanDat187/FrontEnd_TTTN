@@ -1,4 +1,4 @@
-package com.nguyentuandat.fmcarer.MODEL_CALL_API;
+package com.nguyentuandat.fmcarer.RESPONSE;
 
 public class ApiResponse {
     private boolean success;

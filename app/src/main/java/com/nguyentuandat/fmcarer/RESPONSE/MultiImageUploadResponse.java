@@ -1,4 +1,4 @@
-package com.nguyentuandat.fmcarer.MODEL_CALL_API;
+package com.nguyentuandat.fmcarer.RESPONSE;
 
 import java.util.List;
 

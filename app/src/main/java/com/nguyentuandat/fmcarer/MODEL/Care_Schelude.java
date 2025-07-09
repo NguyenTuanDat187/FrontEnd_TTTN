@@ -48,7 +48,7 @@ public class Care_Schelude {
     }
 
     public String getUserId() {
-        return userId;
+        return userId != null ? userId : "";
     }
 
     public void setUserId(String userId) {
@@ -64,7 +64,7 @@ public class Care_Schelude {
     }
 
     public String getType() {
-        return type;
+        return type != null ? type : "";
     }
 
     public void setType(String type) {
@@ -72,7 +72,7 @@ public class Care_Schelude {
     }
 
     public String getCustomType() {
-        return customType;
+        return customType != null ? customType : "";
     }
 
     public void setCustomType(String customType) {
@@ -80,7 +80,7 @@ public class Care_Schelude {
     }
 
     public String getNote() {
-        return note;
+        return note != null ? note : "";
     }
 
     public void setNote(String note) {
@@ -88,7 +88,7 @@ public class Care_Schelude {
     }
 
     public String getReminderDate() {
-        return reminderDate;
+        return reminderDate != null ? reminderDate : "";
     }
 
     public void setReminderDate(String reminderDate) {
@@ -96,7 +96,7 @@ public class Care_Schelude {
     }
 
     public String getReminderTime() {
-        return reminderTime;
+        return reminderTime != null ? reminderTime : "";
     }
 
     public void setReminderTime(String reminderTime) {
@@ -112,7 +112,7 @@ public class Care_Schelude {
     }
 
     public String getRepeatType() {
-        return repeatType;
+        return repeatType != null ? repeatType : "";
     }
 
     public void setRepeatType(String repeatType) {
@@ -125,5 +125,13 @@ public class Care_Schelude {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    // ✅ Lấy loại hiển thị (type hoặc custom_type nếu type == other)
+    public String getDisplayType() {
+        if ("other".equalsIgnoreCase(type)) {
+            return customType != null && !customType.trim().isEmpty() ? customType : "Loại khác";
+        }
+        return type;
     }
 }

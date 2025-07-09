@@ -1,20 +1,21 @@
 package com.nguyentuandat.fmcarer.NETWORK;
 
-import com.nguyentuandat.fmcarer.MODEL.Care_Schelude;
 import com.nguyentuandat.fmcarer.MODEL.Children;
 import com.nguyentuandat.fmcarer.MODEL.Post;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ApiResponse;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.CareScheludeResponse;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ChildrenResponse;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ImageUploadResponse; // Sẽ cần cập nhật
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.MultiImageUploadResponse; // Thêm mới cho nhiều ảnh
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserLoginRequest;
+import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.CareScheludeResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.ChildrenResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.ImageUploadResponse; // Sẽ cần cập nhật
+import com.nguyentuandat.fmcarer.RESPONSE.MultiImageUploadResponse; // Thêm mới cho nhiều ảnh
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpRequest;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.OtpResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.PostRequest;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.PostResponse;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.SingleCareScheludeResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.PostResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.SingleCareScheludeResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserRequest;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.UserListResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserUpdateRequest;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserRequest;
 
@@ -27,6 +28,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -36,67 +38,108 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // ✅ Đăng ký người dùng
+    // 🔒 USER AUTHENTICATION
+    @GET("/api/users")
+    Call<UserListResponse> getAllUsers(); // ✅ Trả về danh sách users (ẩn password)
+
     @POST("/api/users/register")
-    Call<UserResponse> registerUser(@Body UserRequest request);
+    Call<UserResponse> registerUser(@Body UserRequest request); // ✅ Đăng ký
 
-    // ✅ Đăng nhập
     @POST("/api/users/login")
-    Call<UserResponse> loginUser(@Body UserRequest request);
+    Call<UserResponse> loginUser(@Body UserRequest request); // ✅ Đăng nhập chính
 
-    // ✅ Gửi và xác minh OTP
+    @POST("/api/users/login-subuser")
+    Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request); // ✅ Đăng nhập tài khoản phụ
+
     @POST("/api/users/send-otp")
-    Call<OtpResponse> sendOtp(@Body OtpRequest request);
+    Call<OtpResponse> sendOtp(@Body OtpRequest request); // ✅ Gửi OTP
 
-    @POST("/api/users/verify")
-    Call<UserResponse> verifyOtp(@Body OtpRequest request);
-
-    // ✅ Cập nhật thông tin người dùng
     @POST("/api/users/update")
-    Call<UserResponse> updateUser(@Body UserUpdateRequest request);
+    Call<UserResponse> updateUser(@Body UserUpdateRequest request); // ✅ Cập nhật user
 
-    // ✅ Tài khoản phụ
+    @Multipart
+    @POST("/api/users/upload-avatar")
+    Call<UserResponse> uploadImage(
+            @Part("userId") RequestBody userId,
+            @Part MultipartBody.Part avatar
+    ); // ✅ Upload avatar
+
+    // 🔧 Sub-user (tài khoản phụ)
     @POST("/api/users/subuser/create-or-update")
-    Call<ApiResponse> createOrUpdateSubUser(@Body SubUserRequest subUser);
+    Call<ApiResponse> createOrUpdateSubUser(@Body SubUserRequest subUser); // ✅ Thêm/sửa sub user
 
-    // ✅ Children
-    @GET("/api/children/{userId}")
-    Call<ChildrenResponse> getChildrenByUser(@Path("userId") String userId);
+    // ✅ 1. Lấy danh sách trẻ của người dùng (dựa theo token)
+    @GET("/api/children/my")
+    Call<ChildrenResponse> getChildrenByUser(@Header("Authorization") String bearerToken);
 
+    // ✅ 2. Lấy chi tiết 1 trẻ theo ID
+    @GET("/api/children/{childId}")
+    Call<Children> getChildById(@Header("Authorization") String bearerToken, @Path("childId") String childId);
+
+    // ✅ 3. Thêm trẻ mới (dựa theo token)
     @POST("/api/children")
-    Call<Children> addChild(@Body Children child);
+    Call<Children> addChild(@Header("Authorization") String bearerToken, @Body Children child);
 
+    // ✅ 4. Cập nhật thông tin trẻ
     @PUT("/api/children/{childId}")
-    Call<Children> updateChild(@Path("childId") String childId, @Body Children updatedChild);
+    Call<Children> updateChild(@Header("Authorization") String bearerToken, @Path("childId") String childId, @Body Children updatedChild);
 
+    // ✅ 5. Xóa trẻ
     @DELETE("/api/children/{childId}")
-    Call<Void> deleteChild(@Path("childId") String childId);
+    Call<Void> deleteChild(@Header("Authorization") String bearerToken, @Path("childId") String childId);
+
 
     // ✅ Care Schedules / Reminders
 
-    // ➕ Tạo reminder → trả về 1 phần tử mới tạo
+
+    // ✅ Tạo reminder (token từ header, không cần user_id)
     @POST("/api/reminders")
-    Call<SingleCareScheludeResponse> createReminder(@Body Map<String, Object> reminder);
+    Call<SingleCareScheludeResponse> createReminder(
+            @Header("Authorization") String token,
+            @Body Map<String, Object> reminder
+    );
 
-    // 📋 Lấy toàn bộ danh sách reminder
+    // ✅ Lấy toàn bộ reminder của user (từ token)
     @GET("/api/reminders")
-    Call<CareScheludeResponse> getAllReminders(@retrofit2.http.Query("user_id") String userId);
+    Call<CareScheludeResponse> getAllReminders(
+            @Header("Authorization") String token
+    );
 
-
-    // 🔍 Lấy reminder theo ID → trả về 1 phần tử
+    // ✅ Lấy reminder theo ID (có kiểm tra user)
     @GET("/api/reminders/{id}")
-    Call<SingleCareScheludeResponse> getReminderById(@Path("id") String reminderId);
+    Call<SingleCareScheludeResponse> getReminderById(
+            @Header("Authorization") String token,
+            @Path("id") String reminderId
+    );
 
-    // 📝 Cập nhật reminder → trả về danh sách mới nhất (hoặc chỉ phần tử đó tuỳ backend)
+    // ✅ Cập nhật reminder (có kiểm tra user)
     @PUT("/api/reminders/{id}")
-    Call<SingleCareScheludeResponse> updateReminder(@Path("id") String reminderId, @Body Map<String, Object> updateData);
+    Call<SingleCareScheludeResponse> updateReminder(
+            @Header("Authorization") String token,
+            @Path("id") String reminderId,
+            @Body Map<String, Object> updateData
+    );
 
-    // ❌ Xóa reminder theo ID
+    // ✅ Xoá reminder (có kiểm tra user)
     @DELETE("/api/reminders/{id}")
-    Call<ApiResponse> deleteReminder(@Path("id") String reminderId);
+    Call<ApiResponse> deleteReminder(
+            @Header("Authorization") String token,
+            @Path("id") String reminderId
+    );
 
-    @PUT("api/reminders/{id}/complete")
-    Call<SingleCareScheludeResponse> completeReminder(@Path("id") String id);
+
+    @PUT("/api/reminders/{id}/complete")
+    Call<SingleCareScheludeResponse> completeReminder(
+            @Header("Authorization") String token,
+            @Path("id") String id
+    );
+
+    // ✅ Lấy danh sách reminder theo childId (có kiểm tra user)
+    @GET("/api/reminders/by-child/{childId}")
+    Call<CareScheludeResponse> getRemindersByChild(
+            @Header("Authorization") String token,
+            @Path("childId") String childId
+    );
 
     // ✅ Post APIs
 

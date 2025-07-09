@@ -1,4 +1,3 @@
-// ------------------- Children_ADAPTER.java -------------------
 package com.nguyentuandat.fmcarer.ADAPTER;
 
 import android.content.Context;
@@ -26,7 +25,7 @@ import java.util.Locale;
 
 public class Children_ADAPTER extends RecyclerView.Adapter<Children_ADAPTER.ChildViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<Children> childrenList = new ArrayList<>();
     private final SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private final SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -42,13 +41,17 @@ public class Children_ADAPTER extends RecyclerView.Adapter<Children_ADAPTER.Chil
         this.listener = listener;
     }
 
-    public Children_ADAPTER(Context context) {
+    public Children_ADAPTER(@NonNull Context context) {
         this.context = context;
     }
 
     public void setData(List<Children> list) {
-        this.childrenList = list;
+        this.childrenList = list != null ? list : new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public Children getItem(int position) {
+        return childrenList.get(position);
     }
 
     @NonNull
@@ -63,8 +66,12 @@ public class Children_ADAPTER extends RecyclerView.Adapter<Children_ADAPTER.Chil
         Children child = childrenList.get(position);
 
         holder.tvName.setText(child.getName());
-        holder.tvGender.setText(child.getGender().equals("male") ? "Nam" :
-                child.getGender().equals("female") ? "Nữ" : "Khác");
+        holder.tvGender.setText(
+                "Giới tính: " + (
+                        child.getGender().equals("male") ? "Nam" :
+                                child.getGender().equals("female") ? "Nữ" : "Khác"
+                )
+        );
 
         try {
             Date date = inputFormat.parse(child.getDob());
@@ -73,10 +80,15 @@ public class Children_ADAPTER extends RecyclerView.Adapter<Children_ADAPTER.Chil
             holder.tvChildDOB.setText("Ngày sinh: " + child.getDob());
         }
 
-        Glide.with(context)
-                .load(child.getAvatar_url())
-                .placeholder(R.drawable.taikhoan)
-                .into(holder.imgAvatar);
+        String avatarUrl = child.getAvatar_url();
+        if (avatarUrl == null || avatarUrl.isEmpty() || avatarUrl.equals("null")) {
+            holder.imgAvatar.setImageResource(R.drawable.taikhoan);
+        } else {
+            Glide.with(context)
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.taikhoan)
+                    .into(holder.imgAvatar);
+        }
 
         holder.Cardview_itemChild.setOnLongClickListener(v -> {
             if (listener != null) {

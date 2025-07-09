@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -15,7 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserRequest;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserResponse;
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserLoginRequest;
+import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
@@ -31,8 +31,11 @@ public class Login_Activity extends AppCompatActivity {
     private TextView txtGoToRegister, txtForgotPassword;
     private CheckBox checkboxRemember;
 
-    private SharedPreferences sharedPreferences;
-    private static final String PREF_NAME = "login_prefs";
+    private SharedPreferences loginPrefs;
+    private static final String PREF_LOGIN_CREDS = "login_credentials";
+    private static final String PREF_USER_SESSION = "user_session";
+
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,132 +49,151 @@ public class Login_Activity extends AppCompatActivity {
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
         checkboxRemember = findViewById(R.id.checkboxRemember);
 
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        loginPrefs = getSharedPreferences(PREF_LOGIN_CREDS, MODE_PRIVATE);
         loadSavedCredentials();
 
-        btnLogin.setOnClickListener(view -> {
-            String input = edtLoginEmail.getText().toString().trim();
-            String password = edtLoginPassword.getText().toString().trim();
+        apiService = RetrofitClient.getInstance(this).create(ApiService.class);
 
-            if (input.isEmpty()) {
-                edtLoginEmail.setError("Vui lòng nhập email hoặc số điện thoại");
-                return;
-            }
-
-            if (password.length() < 6) {
-                edtLoginPassword.setError("Mật khẩu phải từ 6 ký tự");
-                return;
-            }
-
-            if (checkboxRemember.isChecked()) {
-                saveCredentials(input, password);
-            } else {
-                clearCredentials();
-            }
-
-            loginUser(input, password);
-        });
+        btnLogin.setOnClickListener(view -> attemptLogin());
 
         txtGoToRegister.setOnClickListener(v -> {
-            startActivity(new Intent(Login_Activity.this, Signin_Activity.class));
+            startActivity(new Intent(this, Signin_Activity.class));
             finish();
         });
 
         txtForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(Login_Activity.this, Forgot_password_Activity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, Forgot_password_Activity.class));
         });
 
+        // Nếu có email gửi sang từ đăng ký
         String receivedEmail = getIntent().getStringExtra("email");
+        String receivedPass = getIntent().getStringExtra("password");
         if (receivedEmail != null) {
             edtLoginEmail.setText(receivedEmail);
-            edtLoginPassword.requestFocus();
+            edtLoginPassword.setText(receivedPass != null ? receivedPass : "");
+        }
+
+        // Nếu có token đã lưu → vào thẳng Dashboard
+        String savedToken = getSharedPreferences(PREF_USER_SESSION, MODE_PRIVATE).getString("token", null);
+        if (savedToken != null && !savedToken.isEmpty()) {
+            startActivity(new Intent(this, Dashboar_Activity.class));
+            finish();
         }
     }
 
-    private void loginUser(String input, String password) {
-        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
-        UserRequest request = new UserRequest(null, password);
+    private void attemptLogin() {
+        String input = edtLoginEmail.getText().toString().trim();
+        String password = edtLoginPassword.getText().toString().trim();
 
-        if (Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
-            request.setEmail(input);
-        } else {
-            request.setNumberphone(input);
+        if (input.isEmpty()) {
+            edtLoginEmail.setError("Vui lòng nhập email hoặc số điện thoại");
+            return;
         }
 
-        apiService.loginUser(request).enqueue(new Callback<UserResponse>() {
+        if (password.length() < 6) {
+            edtLoginPassword.setError("Mật khẩu phải từ 6 ký tự");
+            return;
+        }
+
+        if (checkboxRemember.isChecked()) {
+            saveCredentials(input, password);
+        } else {
+            clearCredentials();
+        }
+
+        loginUser(input, password);
+    }
+
+    private void loginUser(String input, String password) {
+        Call<UserResponse> call;
+
+        if (Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+            call = apiService.loginUser(new UserRequest(input, password));
+        } else {
+            call = apiService.loginSubUser(new SubUserLoginRequest(input, password));
+        }
+
+        call.enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     UserResponse.UserData user = response.body().getUser();
+                    String token = response.body().getAccessToken();
 
-                    if (user != null && user.getId() != null) {
-                        if ("parent".equals(user.getRole()) && (user.getEmail() == null || user.getEmail().isEmpty())) {
-                            Toast.makeText(Login_Activity.this, "Tài khoản phụ huynh phải đăng nhập bằng email", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // ✅ Lưu vào USER (để dùng chung)
-                        SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
-                        editor.putString("_id", user.getId());
-                        editor.putString("fullname", user.getFullname());
-                        editor.putString("numberphone", user.getNumberphone());
-                        editor.putString("image", user.getImage());
-                        editor.putString("email", user.getEmail());
-                        editor.putString("role", user.getRole());
-                        editor.apply();
-
-                        // ✅ Lưu riêng parentId để sử dụng cho subuser
-                        SharedPreferences pref = getSharedPreferences("USER_PREF", MODE_PRIVATE);
-                        pref.edit().putString("userId", user.getId()).apply();
-
-                        Log.d("LOGIN_SUCCESS", "User ID: " + user.getId());
+                    if (user != null && token != null && !token.isEmpty()) {
+                        saveUserSession(user, token);
 
                         boolean isInfoComplete = user.getFullname() != null && !user.getFullname().isEmpty()
                                 && user.getNumberphone() != null && !user.getNumberphone().isEmpty()
                                 && user.getImage() != null && !user.getImage().isEmpty();
 
                         Intent intent = new Intent(Login_Activity.this, Dashboar_Activity.class);
-                        intent.putExtra("showDialog", !isInfoComplete);
+                        intent.putExtra("showDialog", !isInfoComplete); // mở dialog nếu thiếu info
                         startActivity(intent);
                         finish();
 
-                        Toast.makeText(Login_Activity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login_Activity.this, "✅ Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Login_Activity.this, "Lỗi dữ liệu người dùng", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login_Activity.this, "Dữ liệu đăng nhập không hợp lệ!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Login_Activity.this, "Tài khoản hoặc mật khẩu sai!", Toast.LENGTH_SHORT).show();
+                    handleLoginError(response);
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                Log.e("API_LOGIN", "Login failed", t);
-                Toast.makeText(Login_Activity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API_LOGIN", "Lỗi kết nối", t);
+                Toast.makeText(Login_Activity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void saveCredentials(String email, String password) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("email", email);
+    private void saveUserSession(UserResponse.UserData user, String token) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREF_USER_SESSION, MODE_PRIVATE).edit();
+        editor.putString("_id", user.getId());
+        editor.putString("fullname", user.getFullname());
+        editor.putString("numberphone", user.getNumberphone());
+        editor.putString("image", user.getImage());
+        editor.putString("email", user.getEmail());
+        editor.putString("role", user.getRole());
+        editor.putString("token", token);
+        editor.apply();
+    }
+
+    private void handleLoginError(Response<UserResponse> response) {
+        String errorMessage = "Đăng nhập thất bại!";
+        try {
+            if (response.errorBody() != null) {
+                errorMessage = response.errorBody().string();
+            } else if (response.body() != null && response.body().getMessage() != null) {
+                errorMessage = response.body().getMessage();
+            }
+        } catch (Exception e) {
+            Log.e("LOGIN_ERROR", "Lỗi đọc message", e);
+        }
+        Toast.makeText(Login_Activity.this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    private void saveCredentials(String input, String password) {
+        SharedPreferences.Editor editor = loginPrefs.edit();
+        editor.putString("input_credential", input);
         editor.putString("password", password);
         editor.putBoolean("remember", true);
         editor.apply();
     }
 
     private void loadSavedCredentials() {
-        boolean remember = sharedPreferences.getBoolean("remember", false);
+        boolean remember = loginPrefs.getBoolean("remember", false);
         if (remember) {
-            edtLoginEmail.setText(sharedPreferences.getString("email", ""));
-            edtLoginPassword.setText(sharedPreferences.getString("password", ""));
+            edtLoginEmail.setText(loginPrefs.getString("input_credential", ""));
+            edtLoginPassword.setText(loginPrefs.getString("password", ""));
             checkboxRemember.setChecked(true);
         }
     }
 
     private void clearCredentials() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = loginPrefs.edit();
         editor.clear();
         editor.apply();
     }

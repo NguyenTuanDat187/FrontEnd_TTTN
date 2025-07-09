@@ -6,33 +6,32 @@ package com.nguyentuandat.fmcarer.MODEL;
  */
 public class Children {
 
-    // ID của đối tượng trong MongoDB (_id)
+    // ID của bản ghi trẻ trong MongoDB
     private String _id;
 
-    // ID của người dùng (cha/mẹ) gắn với trẻ này
+    // Server sẽ tự thêm user_id từ token → không cần truyền khi tạo/sửa
     private String user_id;
 
     // Họ tên trẻ
     private String name;
 
-    // Ngày sinh (định dạng: yyyy-MM-dd)
+    // Ngày sinh (yyyy-MM-dd)
     private String dob;
 
     // Giới tính: "male", "female", "other"
     private String gender;
 
-    // Đường dẫn URL của ảnh đại diện (nếu có)
+    // Ảnh đại diện (nếu có)
     private String avatar_url;
 
-    // Ngày tạo bản ghi (auto bởi server)
+    // Thời gian tạo bản ghi
     private String created_at;
 
-    // Constructor rỗng (bắt buộc cho Firebase/Retrofit/Gson)
+    // Constructor rỗng – BẮT BUỘC cho Retrofit/Gson
     public Children() {
     }
 
-    // Constructor đầy đủ tham số
-
+    // Constructor dùng khi lấy dữ liệu đầy đủ từ server
     public Children(String _id, String user_id, String name, String dob, String gender, String avatar_url, String created_at) {
         this._id = _id;
         this.user_id = user_id;
@@ -42,19 +41,15 @@ public class Children {
         this.avatar_url = avatar_url;
         this.created_at = created_at;
     }
-    public Children(String userId, String name, String dob, String gender) {
-        this.user_id = userId;
-        this.name = name;
-        this.gender = gender;
-        this.dob = dob;
-    }
 
+    // Constructor dùng để tạo mới hoặc cập nhật – KHÔNG CẦN user_id
     public Children(String name, String dob, String gender) {
         this.name = name;
         this.dob = dob;
         this.gender = gender;
     }
-    // Getter & Setter cho từng trường
+
+    // Getter & Setter
 
     public String get_id() {
         return _id;

@@ -28,7 +28,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.FRAGMENT.*;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserUpdateRequest;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
@@ -55,8 +55,8 @@ public class Dashboar_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbarTitle = findViewById(R.id.toolbarTitle); // 📌 TextView trong Toolbar
-        toolbar.setTitle(""); // Xóa tiêu đề mặc định của Toolbar
+        toolbarTitle = findViewById(R.id.toolbarTitle);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
@@ -67,14 +67,13 @@ public class Dashboar_Activity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Gán view header
         View headerView = navigationView.getHeaderView(0);
         navAvatar = headerView.findViewById(R.id.imgAvatar);
         navUsername = headerView.findViewById(R.id.txtUsername);
         navEmail = headerView.findViewById(R.id.txtEmail);
+
         loadHeaderData();
 
-        // Navigation bottom
         bottomNav.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
@@ -89,7 +88,6 @@ public class Dashboar_Activity extends AppCompatActivity {
             return true;
         });
 
-        // Navigation Drawer
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_top_up) {
@@ -109,14 +107,21 @@ public class Dashboar_Activity extends AppCompatActivity {
             return true;
         });
 
-        // Load màn đầu
         if (savedInstanceState == null) {
             replaceFragment(new Home_Fragment(), "Trang chủ");
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
-        // Gợi ý cập nhật nếu thiếu info
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+
+        // 🛡️ Kiểm tra token
+        String token = prefs.getString("token", "");
+        if (token == null || token.isEmpty()) {
+            startActivity(new Intent(this, Login_Activity.class));
+            finish();
+            return;
+        }
+
         String fullname = prefs.getString("fullname", "");
         String phone = prefs.getString("numberphone", "");
         String image = prefs.getString("image", "");
@@ -127,7 +132,7 @@ public class Dashboar_Activity extends AppCompatActivity {
     }
 
     private void loadHeaderData() {
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String name = prefs.getString("fullname", "Tên chưa cập nhật");
         String email = prefs.getString("email", "Email chưa cập nhật");
         String image = prefs.getString("image", "");
@@ -139,18 +144,12 @@ public class Dashboar_Activity extends AppCompatActivity {
         }
     }
 
-    // 📌 Thêm title fragment vào đây
     private void replaceFragment(androidx.fragment.app.Fragment fragment, String title) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
         if (toolbarTitle != null) {
             toolbarTitle.setText(title);
-        }
-        else {
-
-
-
         }
     }
 
@@ -175,11 +174,12 @@ public class Dashboar_Activity extends AppCompatActivity {
         TextInputEditText edtPhone = dialog.findViewById(R.id.edtPhone);
         imgAvatar = dialog.findViewById(R.id.imgAvatar);
 
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String userId = prefs.getString("_id", null);
         String currentName = prefs.getString("fullname", "");
         String currentPhone = prefs.getString("numberphone", "");
         String currentImage = prefs.getString("image", "");
+        String token = prefs.getString("token", "");
 
         edtFullname.setText(currentName);
         edtPhone.setText(currentPhone);
@@ -212,7 +212,7 @@ public class Dashboar_Activity extends AppCompatActivity {
             String imageUrl = selectedImageUri != null ? selectedImageUri.toString() : currentImage;
             UserUpdateRequest request = new UserUpdateRequest(userId, name, phone, imageUrl);
 
-            ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
             Call<UserResponse> call = apiService.updateUser(request);
 
             call.enqueue(new Callback<UserResponse>() {

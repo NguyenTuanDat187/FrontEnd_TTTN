@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpRequest;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpResponse;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserResponse;
-import com.nguyentuandat.fmcarer.NETWORK.ApiService;
-import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
 import com.nguyentuandat.fmcarer.REPOSITORY.AuthRepository;
+import com.nguyentuandat.fmcarer.RESPONSE.OtpResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
+import com.nguyentuandat.fmcarer.NETWORK.ApiService;
+import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +42,8 @@ public class Signin_Activity extends AppCompatActivity {
     private String currentOtpCode = "";
 
     private ApiService apiService;
+    private static final String TAG = "SIGNIN_ACTIVITY";
+    private static final String PREF_USER_SESSION = "user_session";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +58,16 @@ public class Signin_Activity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         txtLogin = findViewById(R.id.txtLogin);
 
-        apiService = RetrofitClient.getInstance().create(ApiService.class);
+        apiService = RetrofitClient.getInstance(this).create(ApiService.class);
 
         layoutEmail.setEndIconOnClickListener(v -> {
             String email = edtEmail.getText().toString().trim();
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 layoutEmail.setError("Email không hợp lệ");
-            } else {
-                layoutEmail.setError(null);
-                sendOtpToEmail(email);
+                return;
             }
+            layoutEmail.setError(null);
+            sendOtpToEmail(email);
         });
 
         edtEmail.addTextChangedListener(new TextWatcher() {
@@ -81,46 +84,19 @@ public class Signin_Activity extends AppCompatActivity {
             String email = edtEmail.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
 
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                layoutEmail.setError("Email không hợp lệ");
+                return;
+            }
+
             if (!isOtpVerified || !email.equals(verifiedEmail)) {
                 Toast.makeText(this, "Vui lòng xác minh email bằng mã OTP!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (validateInputs()) {
-                AuthRepository repository = new AuthRepository();
-                repository.registerUser(email, password).enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            Toast.makeText(Signin_Activity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+            if (!validateInputs()) return;
 
-                            // 👉 Lưu thông tin người dùng vào SharedPreferences
-                            UserResponse.UserData user = response.body().getUser();
-                            if (user != null) {
-                                SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
-                                editor.putString("_id", user.getId());
-                                editor.putString("fullname", user.getFullname() != null ? user.getFullname() : "");
-                                editor.putString("numberphone", user.getNumberphone() != null ? user.getNumberphone() : "");
-                                editor.putString("image", user.getImage() != null ? user.getImage() : "");
-                                editor.putString("email", user.getEmail());
-                                editor.apply();
-                            }
-
-                            Intent intent = new Intent(Signin_Activity.this, Login_Activity.class);
-                            intent.putExtra("email", email);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(Signin_Activity.this, "Đăng ký thất bại!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        Toast.makeText(Signin_Activity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+            registerUser(email, password);
         });
 
         txtLogin.setOnClickListener(view -> {
@@ -152,16 +128,15 @@ public class Signin_Activity extends AppCompatActivity {
             public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     currentOtpCode = response.body().getOtp();
-                    Toast.makeText(Signin_Activity.this, "OTP đã gửi về email!", Toast.LENGTH_SHORT).show();
                     showOtpDialog(email);
                 } else {
-                    Toast.makeText(Signin_Activity.this, "Không thể gửi OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Signin_Activity.this, "Email đã tồn tại hoặc lỗi gửi OTP", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<OtpResponse> call, Throwable t) {
-                Toast.makeText(Signin_Activity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Signin_Activity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -186,31 +161,64 @@ public class Signin_Activity extends AppCompatActivity {
 
         btnVerifyOtp.setOnClickListener(v -> {
             String otp = edtOtp.getText().toString().trim();
-            if (otp.isEmpty()) {
-                edtOtp.setError("Vui lòng nhập mã OTP");
-            } else if (otp.equals(currentOtpCode)) {
+            if (otp.equals(currentOtpCode)) {
                 isOtpVerified = true;
                 verifiedEmail = email;
-                Toast.makeText(this, "Xác minh OTP thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "✅ Xác minh OTP thành công!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                edtOtp.setError("Mã OTP không đúng");
-            }
-        });
-
-        btnConfirm.setOnClickListener(v -> {
-            if (isOtpVerified && email.equals(verifiedEmail)) {
-                dialog.dismiss();
-            } else {
-                Toast.makeText(this, "Vui lòng nhập đúng mã OTP", Toast.LENGTH_SHORT).show();
+                edtOtp.setError("❌ Mã OTP không đúng");
             }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-
+        btnConfirm.setOnClickListener(v -> dialog.dismiss());
         txtResendOtp.setOnClickListener(v -> {
             sendOtpToEmail(email);
             Toast.makeText(this, "Đã gửi lại mã OTP", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void registerUser(String email, String password) {
+        AuthRepository repository = new AuthRepository(this);
+        repository.registerUser(email, password).enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.code() == 201 && response.body() != null && response.body().isSuccess()) {
+                    UserResponse responseBody = response.body();
+                    UserResponse.UserData user = responseBody.getUser();
+
+                    SharedPreferences.Editor editor = getSharedPreferences(PREF_USER_SESSION, MODE_PRIVATE).edit();
+                    editor.putString("_id", user.getId());
+                    editor.putString("fullname", user.getFullname());
+                    editor.putString("numberphone", user.getNumberphone());
+                    editor.putString("image", user.getImage());
+                    editor.putString("email", user.getEmail());
+                    editor.putString("role", "parent");
+
+                    // ✅ Lưu token nếu có
+                    if (responseBody.getAccessToken() != null) {
+                        editor.putString("token", responseBody.getAccessToken());
+                    }
+
+                    editor.apply();
+
+                    Log.d(TAG, "✅ Đăng ký thành công: ID = " + user.getId());
+
+                    Intent intent = new Intent(Signin_Activity.this, Login_Activity.class);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", password);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(Signin_Activity.this, "Đăng ký thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(Signin_Activity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

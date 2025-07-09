@@ -19,7 +19,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.nguyentuandat.fmcarer.MODEL.Post;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.R;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ApiResponse; // Đảm bảo lớp ApiResponse tồn tại và đúng
+import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse; // Đảm bảo lớp ApiResponse tồn tại và đúng
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

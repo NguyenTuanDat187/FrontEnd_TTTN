@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.ADAPTER.Children_ADAPTER;
 import com.nguyentuandat.fmcarer.MODEL.Children;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ChildrenResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.ChildrenResponse;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
@@ -43,11 +44,18 @@ public class Children_List_Fragment extends Fragment {
     private RecyclerView recyclerView;
     private Children_ADAPTER adapter;
     private FloatingActionButton btnAddChild;
-    private List<Children> childrenList = new ArrayList<>(); // ✅ Danh sách trẻ
+    private List<Children> childrenList = new ArrayList<>();
+
+    private ApiService apiService;
+    private String bearerToken;  // token chuẩn dạng "Bearer <token>"
+
+    private static final String TAG = "ChildrenListFragment";
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.children_list_fragment, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerChildren);
@@ -56,6 +64,17 @@ public class Children_List_Fragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new Children_ADAPTER(getContext());
         recyclerView.setAdapter(adapter);
+
+        // Lấy token một cách chuẩn xác từ đúng SharedPreferences
+        bearerToken = getBearerToken();
+        Log.d(TAG, "Lấy token: " + bearerToken);
+
+        if (bearerToken == null) {
+            Toast.makeText(getContext(), "Chưa đăng nhập hoặc token không hợp lệ", Toast.LENGTH_SHORT).show();
+            // Bạn có thể xử lý chuyển màn hình đăng nhập hoặc disable UI ở đây nếu muốn
+        }
+
+        apiService = RetrofitClient.getInstance(requireContext()).create(ApiService.class);
 
         adapter.setOnChildActionListener(new Children_ADAPTER.OnChildActionListener() {
             @Override
@@ -76,33 +95,46 @@ public class Children_List_Fragment extends Fragment {
         return view;
     }
 
-    // ✅ Phương thức để lấy danh sách trẻ ở ngoài Fragment khác
-    public List<Children> getChildrenList() {
-        return childrenList;
+    // Hàm lấy token dạng "Bearer <token>" từ SharedPreferences đúng file
+    private String getBearerToken() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        String token = prefs.getString("token", "");
+        Log.d(TAG, "Token lấy từ SharedPreferences: " + token);
+        if (token != null && !token.isEmpty()) {
+            return "Bearer " + token;
+        }
+        return null; // trả về null nếu không có token hợp lệ
     }
 
     private void loadChildrenList() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
-        String userId = prefs.getString("_id", "");
-
-        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
-        apiService.getChildrenByUser(userId).enqueue(new Callback<ChildrenResponse>() {
+        if (bearerToken == null) {
+            Toast.makeText(getContext(), "Token không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        apiService.getChildrenByUser(bearerToken).enqueue(new Callback<ChildrenResponse>() {
             @Override
             public void onResponse(Call<ChildrenResponse> call, Response<ChildrenResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    childrenList = response.body().getData();  // ✅ Lưu vào biến toàn cục
+                    childrenList = response.body().getData();
                     adapter.setData(childrenList);
+                } else if (response.code() == 401) {
+                    Toast.makeText(getContext(), "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+                    // Xử lý logout hoặc chuyển sang màn hình login nếu cần
                 } else {
                     Toast.makeText(getContext(), "Không có dữ liệu trẻ em", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Response không thành công, code: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<ChildrenResponse> call, Throwable t) {
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Lỗi kết nối loadChildrenList", t);
             }
         });
     }
+
+    // Các hàm thêm/sửa/xóa và dialog giữ nguyên như bạn đã có, chỉ cần đảm bảo gọi api với bearerToken đúng
 
     private void showAddOrUpdateDialog(@Nullable Children childToEdit) {
         Dialog dialog = new Dialog(requireContext());
@@ -123,11 +155,6 @@ public class Children_List_Fragment extends Fragment {
         RadioGroup genderGroup = dialog.findViewById(R.id.rgGender);
         MaterialButton btnSave = dialog.findViewById(R.id.btnSaveChild);
         MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
-
-        if (edtName == null || edtDob == null || genderGroup == null || btnSave == null || btnCancel == null) {
-            Toast.makeText(getContext(), "Không thể hiển thị form", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         edtDob.setOnClickListener(v -> showDatePickerDialog(edtDob));
 
@@ -164,6 +191,12 @@ public class Children_List_Fragment extends Fragment {
                 return;
             }
 
+            if (bearerToken == null) {
+                Toast.makeText(requireContext(), "Token không hợp lệ, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            }
+
             if (childToEdit == null) {
                 addChildToServer(name, dob, gender);
             } else {
@@ -192,13 +225,19 @@ public class Children_List_Fragment extends Fragment {
     }
 
     private void addChildToServer(String name, String dob, String gender) {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
-        String userId = prefs.getString("_id", "");
+        if (bearerToken == null) {
+            Toast.makeText(getContext(), "Token không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Children child = new Children(userId, name, dob, gender);
-        ApiService api = RetrofitClient.getInstance().create(ApiService.class);
+        Children child = new Children();
+        child.setName(name);
+        child.setDob(dob);
+        child.setGender(gender);
+        child.setAvatar_url(null); // vẫn có thể set nếu bạn dùng ảnh
 
-        api.addChild(child).enqueue(new Callback<Children>() {
+
+        apiService.addChild(bearerToken, child).enqueue(new Callback<Children>() {
             @Override
             public void onResponse(Call<Children> call, Response<Children> response) {
                 if (response.isSuccessful()) {
@@ -217,10 +256,13 @@ public class Children_List_Fragment extends Fragment {
     }
 
     private void updateChildToServer(String childId, String name, String dob, String gender) {
-        Children updatedChild = new Children(name, dob, gender);
-        ApiService api = RetrofitClient.getInstance().create(ApiService.class);
+        if (bearerToken == null) {
+            Toast.makeText(getContext(), "Token không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        api.updateChild(childId, updatedChild).enqueue(new Callback<Children>() {
+        Children updatedChild = new Children(name, dob, gender);
+        apiService.updateChild(bearerToken, childId, updatedChild).enqueue(new Callback<Children>() {
             @Override
             public void onResponse(Call<Children> call, Response<Children> response) {
                 if (response.isSuccessful()) {
@@ -248,8 +290,12 @@ public class Children_List_Fragment extends Fragment {
     }
 
     private void deleteChildFromServer(String childId) {
-        ApiService api = RetrofitClient.getInstance().create(ApiService.class);
-        api.deleteChild(childId).enqueue(new Callback<Void>() {
+        if (bearerToken == null) {
+            Toast.makeText(getContext(), "Token không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.deleteChild(bearerToken, childId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -266,4 +312,10 @@ public class Children_List_Fragment extends Fragment {
             }
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadChildrenList();
+    }
+
 }

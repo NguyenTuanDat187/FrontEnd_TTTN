@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.nguyentuandat.fmcarer.MODEL_CALL_API.ApiResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserRequest;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
@@ -85,7 +85,7 @@ public class Account_Sub_Create_Fragment extends Fragment {
         // 👉 In log để debug nếu cần
         Log.d("SUBUSER_REQUEST", new Gson().toJson(request));
 
-        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        ApiService apiService = RetrofitClient.getInstance(getContext()).create(ApiService.class);
         Call<ApiResponse> call = apiService.createOrUpdateSubUser(request);
         call.enqueue(new Callback<ApiResponse>() {
             @Override

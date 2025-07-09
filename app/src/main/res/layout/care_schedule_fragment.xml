@@ -1,37 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="@color/mau_nen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
     android:padding="16dp">
 
-    <!-- 🧭 Toolbar -->
+<!--    &lt;!&ndash; 🧭 Toolbar &ndash;&gt;-->
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/mau_nen"-->
+<!--        android:title="Lịch chăm sóc"-->
+<!--        android:titleTextColor="@android:color/black"-->
+<!--        android:elevation="4dp"-->
+<!--        app:titleTextAppearance="@style/TextAppearance.AppCompat.Large"/>-->
 
-    <!-- 📅 Tiêu đề -->
-    <TextView
-        android:gravity="center"
-        android:id="@+id/tvCareTitle"
+    <!-- 🔍 Thanh tìm kiếm -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Danh sách lịch chăm sóc"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="8dp"/>
+        android:queryHint="Tìm kiếm lịch chăm sóc..."
+        android:iconifiedByDefault="false"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:iconifiedByDefault="false"
+        android:background="@drawable/bg_searchview"/>
 
     <!-- 🧾 Danh sách lịch chăm sóc -->
     <androidx.recyclerview.widget.RecyclerView
-
         android:id="@+id/recyclerCareList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical"
+        android:paddingBottom="80dp"/>
 
     <!-- ➕ Nút thêm lịch chăm sóc -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
