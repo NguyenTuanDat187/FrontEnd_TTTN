@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +30,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.FRAGMENT.*;
+import com.nguyentuandat.fmcarer.MODEL.Care_Schelude;
 import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserUpdateRequest;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
@@ -48,6 +51,7 @@ public class Dashboar_Activity extends AppCompatActivity {
     private ImageView navAvatar;
     private TextView navUsername, navEmail;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

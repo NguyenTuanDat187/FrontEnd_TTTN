@@ -92,27 +92,31 @@ public interface ApiService {
     // ✅ Care Schedules / Reminders
 
 
-    // ✅ Tạo reminder (token từ header, không cần user_id)
+    // ✅ Tạo reminder mới
+    // Backend: router.post('/', requireAuth, controller.createReminder);
     @POST("/api/reminders")
     Call<SingleCareScheludeResponse> createReminder(
             @Header("Authorization") String token,
-            @Body Map<String, Object> reminder
+            @Body Map<String, Object> reminderData // Đổi tên cho rõ ràng hơn
     );
 
     // ✅ Lấy toàn bộ reminder của user (từ token)
+    // Backend: router.get('/', requireAuth, controller.getRemindersByUser);
     @GET("/api/reminders")
     Call<CareScheludeResponse> getAllReminders(
             @Header("Authorization") String token
     );
 
     // ✅ Lấy reminder theo ID (có kiểm tra user)
+    // Backend: router.get('/:id', requireAuth, controller.getReminderById);
     @GET("/api/reminders/{id}")
     Call<SingleCareScheludeResponse> getReminderById(
             @Header("Authorization") String token,
-            @Path("id") String reminderId
+            @Path("id") String reminderId // Tên @Path "id" khớp với backend
     );
 
     // ✅ Cập nhật reminder (có kiểm tra user)
+    // Backend: router.put('/:id', requireAuth, controller.updateReminder);
     @PUT("/api/reminders/{id}")
     Call<SingleCareScheludeResponse> updateReminder(
             @Header("Authorization") String token,
@@ -121,26 +125,30 @@ public interface ApiService {
     );
 
     // ✅ Xoá reminder (có kiểm tra user)
+    // Backend: router.delete('/:id', requireAuth, controller.deleteReminder);
     @DELETE("/api/reminders/{id}")
     Call<ApiResponse> deleteReminder(
             @Header("Authorization") String token,
             @Path("id") String reminderId
     );
 
-
+    // ✅ Đánh dấu hoàn thành (có kiểm tra user)
+    // Backend: router.put('/:id/complete', requireAuth, controller.completeReminder);
+    // Lưu ý: Đường dẫn này không có controller tương ứng trong file bạn gửi, nhưng có trong router.
+    // Tôi giả định bạn đã có hàm completeReminder trong controller.
     @PUT("/api/reminders/{id}/complete")
     Call<SingleCareScheludeResponse> completeReminder(
             @Header("Authorization") String token,
-            @Path("id") String id
+            @Path("id") String reminderId // Đổi tên tham số cho nhất quán
     );
 
     // ✅ Lấy danh sách reminder theo childId (có kiểm tra user)
+    // Backend: router.get('/by-child/:childId', requireAuth, controller.getRemindersByChild);
     @GET("/api/reminders/by-child/{childId}")
     Call<CareScheludeResponse> getRemindersByChild(
             @Header("Authorization") String token,
-            @Path("childId") String childId
+            @Path("childId") String childId // Tên @Path "childId" khớp với backend
     );
-
     // ✅ Post APIs
 
     @POST("/api/posts")

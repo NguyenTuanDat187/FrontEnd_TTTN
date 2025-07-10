@@ -16,6 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static final String BASE_URL = "http://192.168.1.9:6000/"; // 🔁 Thay IP theo server của bạn
+   // private static final String BASE_URL = "http://10.0.2.2:6000/"; // chạy trên máy giả lập Android
+
 
     // 🔹 Tạo Retrofit với header Authorization nếu có token trong SharedPreferences
     public static Retrofit getInstance(Context context) {
