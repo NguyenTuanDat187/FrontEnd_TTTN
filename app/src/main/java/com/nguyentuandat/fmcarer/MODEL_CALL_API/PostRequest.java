@@ -5,23 +5,23 @@ import java.util.List;
 
 public class PostRequest {
 
-    @SerializedName("userId") // Đảm bảo khớp với tên trường backend mong đợi
+    @SerializedName("userId") // Khớp với id_user ở backend
     private String userId;
 
-    // Đã loại bỏ fullname và image vì backend sẽ tự lấy từ User model
-    // private String fullname;
-    // private String image;
+    // ✅ Đã loại bỏ userName và userAvatar vì backend sẽ tự lấy từ User model
+    // private String userName;
+    // private String userAvatar;
 
-    @SerializedName("content") // Đảm bảo khớp với tên trường backend mong đợi
+    @SerializedName("content")
     private String content;
 
     @SerializedName("selectedVisibility") // Đảm bảo khớp với tên trường backend mong đợi
-    private String selectedVisibility; // Đổi từ 'visibility' sang 'selectedVisibility' nếu đây là tên bạn đang gửi từ Android
+    private String selectedVisibility;
 
-    @SerializedName("mediaUrls") // Đảm bảo khớp với tên trường backend mong đợi ('media_urls' trong Post model, nhưng 'mediaUrls' khi gửi từ Android)
+    @SerializedName("mediaUrls") // Khớp với media_urls ở backend
     private List<String> mediaUrls;
 
-    // Constructor mới: KHÔNG CÓ fullname VÀ image
+    // ✅ Constructor mới: KHÔNG CÓ userName VÀ userAvatar
     public PostRequest(String userId, String content, String selectedVisibility, List<String> mediaUrls) {
         this.userId = userId;
         this.content = content;
@@ -29,7 +29,7 @@ public class PostRequest {
         this.mediaUrls = mediaUrls;
     }
 
-    // --- Getter & Setter cho các trường còn lại ---
+    // --- Getters & Setters ---
     public String getUserId() {
         return userId;
     }
@@ -38,7 +38,13 @@ public class PostRequest {
         this.userId = userId;
     }
 
-    // Đã loại bỏ Getter/Setter cho fullname và image
+    // ✅ Đã loại bỏ Getters & Setters cho userName và userAvatar
+    /*
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+    public String getUserAvatar() { return userAvatar; }
+    public void setUserAvatar(String userAvatar) { this.userAvatar = userAvatar; }
+    */
 
     public String getContent() {
         return content;
@@ -48,19 +54,19 @@ public class PostRequest {
         this.content = content;
     }
 
-    public String getSelectedVisibility() { // Đổi tên getter để khớp với selectedVisibility
+    public String getSelectedVisibility() {
         return selectedVisibility;
     }
 
-    public void setSelectedVisibility(String selectedVisibility) { // Đổi tên setter
+    public void setSelectedVisibility(String selectedVisibility) {
         this.selectedVisibility = selectedVisibility;
     }
 
-    public List<String> getMediaUrls() { // Đổi tên getter để khớp với mediaUrls
+    public List<String> getMediaUrls() {
         return mediaUrls;
     }
 
-    public void setMediaUrls(List<String> mediaUrls) { // Đổi tên setter
+    public void setMediaUrls(List<String> mediaUrls) {
         this.mediaUrls = mediaUrls;
     }
 }

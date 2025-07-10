@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_dialog_rounded"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="12dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:contentPadding="16dp"
+    app:cardBackgroundColor="@android:color/white"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <!-- Header: Avatar + Tên người đăng + Thời gian + Quyền -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/taikhoan"
-            android:background="@drawable/bg_circle_blue"
             android:scaleType="centerCrop"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"
+            android:contentDescription="User Avatar" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -34,79 +41,109 @@
                 android:id="@+id/tvUserName"
                 android:text="Tên người đăng"
                 android:textStyle="bold"
-                android:textSize="15sp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/tvVisibility"
-                android:text="Chế độ: Cộng đồng"
-                android:textSize="12sp"
-                android:textColor="@color/gray"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="2dp">
 
-            <TextView
-                android:id="@+id/tvCreatedAt"
-                android:text="5 phút trước"
-                android:textSize="12sp"
-                android:textColor="@color/gray"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"/>
+                <TextView
+                    android:id="@+id/tvCreatedAt"
+                    android:text="5 phút trước"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvVisibility"
+                    android:text="Cộng đồng"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Nội dung bài viết -->
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nội dung bài viết..."
         android:textSize="15sp"
-        android:layout_marginTop="8dp"/>
+        android:textColor="@android:color/black"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:layout_marginBottom="12dp"
+        android:maxLines="6"
+        android:ellipsize="end"/>
 
-    <!-- Danh sách ảnh bài viết (nếu có) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerImages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
         android:nestedScrollingEnabled="false"
         android:visibility="gone"/>
 
-    <!-- Thanh hành động: Like - Comment - Share -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginBottom="8dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="8dp">
+        android:gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/btnLike"
-            android:layout_width="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@drawable/yeuthich"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Thích"/>
+            android:contentDescription="Thích"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <ImageButton
             android:id="@+id/btnComment"
-            android:layout_width="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@drawable/binhluan"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Bình luận"/>
+            android:contentDescription="Bình luận"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <ImageButton
             android:id="@+id/btnShare"
-            android:layout_width="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@drawable/chiase"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Chia sẻ"/>
+            android:contentDescription="Chia sẻ"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 
 </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

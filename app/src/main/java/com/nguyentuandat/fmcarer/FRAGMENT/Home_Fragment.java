@@ -52,7 +52,7 @@ public class Home_Fragment extends Fragment {
     private RecyclerView rvSelectedImagesPreview;
     private SelectedImageAdapter selectedImageAdapter;
     private EditText edtPostContent;
-    private Spinner spinnerVisibility;
+    private AutoCompleteTextView spinnerVisibility;
     private AlertDialog postDialog;
     private ApiService apiService;
     private ProgressBar progressBar;
@@ -67,12 +67,16 @@ public class Home_Fragment extends Fragment {
     private Post_ADAPTER postAdapter;
     private final List<Post> postList = new ArrayList<>();
 
+    // ✅ Hằng số cho tên SharedPreferences, khớp với nơi Login_Activity lưu token và thông tin người dùng
+    private static final String PREF_USER_SESSION = "user_session";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        SharedPreferences prefs = requireActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
+        // ✅ Lấy thông tin người dùng từ SharedPreferences "user_session" để nhất quán
+        SharedPreferences prefs = requireActivity().getSharedPreferences(PREF_USER_SESSION, Context.MODE_PRIVATE);
         userId = prefs.getString("_id", "");
         userName = prefs.getString("fullname", "");
         userAvatar = prefs.getString("image", "");
@@ -123,28 +127,27 @@ public class Home_Fragment extends Fragment {
         rvSelectedImagesPreview.setAdapter(selectedImageAdapter);
         rvSelectedImagesPreview.setVisibility(View.GONE);
 
+        // Hiển thị tên và ảnh đại diện của người dùng hiện tại trên dialog
         tvUserName.setText(userName);
         Glide.with(this).load(userAvatar).placeholder(R.drawable.taikhoan).into(imgDialogAvatar);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.visibility_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerVisibility.setAdapter(adapter);
-        spinnerVisibility.setSelection(adapter.getPosition("Cộng đồng"));
-        spinnerVisibility.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selection = parent.getItemAtPosition(position).toString();
-                if (selection.equals("Gia đình")) {
-                    selectedVisibility = "family";
-                } else if (selection.equals("Riêng tư")) {
-                    selectedVisibility = "private";
-                } else {
-                    selectedVisibility = "public";
-                }
-            }
+        int defaultPosition = adapter.getPosition("Cộng đồng");
+        if (defaultPosition != -1) {
+            spinnerVisibility.setText(adapter.getItem(defaultPosition), false);
+            selectedVisibility = "public";
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+
+        spinnerVisibility.setOnItemClickListener((parent, view, position, id) -> {
+            String selection = parent.getItemAtPosition(position).toString();
+            if (selection.equals("Bạn bè")) {
+                selectedVisibility = "friends";
+            } else if (selection.equals("Riêng tư")) {
+                selectedVisibility = "private";
+            } else { // "Cộng đồng"
                 selectedVisibility = "public";
             }
         });
@@ -168,6 +171,12 @@ public class Home_Fragment extends Fragment {
         }
         btnPostSubmit.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
+
+        // ✅ Thêm log để kiểm tra token trước khi gửi bài
+        SharedPreferences prefs = requireActivity().getSharedPreferences(PREF_USER_SESSION, Context.MODE_PRIVATE);
+        String currentToken = prefs.getString("token", "NO_TOKEN_FOUND");
+        Log.d("Home_Fragment", "Token before submitPost: " + (currentToken.equals("NO_TOKEN_FOUND") ? "Not Found" : currentToken.substring(0, Math.min(currentToken.length(), 10)) + "..."));
+
 
         if (!selectedImageUris.isEmpty()) {
             uploadImagesToServer(content);
@@ -196,7 +205,6 @@ public class Home_Fragment extends Fragment {
             }
         }
 
-        // ❗ Sửa chỗ này: thêm kiểu <MultiImageUploadResponse>
         apiService.uploadMultipleImages(imageParts).enqueue(new Callback<MultiImageUploadResponse>() {
             @Override
             public void onResponse(@NonNull Call<MultiImageUploadResponse> call, @NonNull Response<MultiImageUploadResponse> response) {
@@ -218,10 +226,9 @@ public class Home_Fragment extends Fragment {
         });
     }
 
-    // ✅ Đăng bài sau khi có media URLs
     private void createPostWithMediaUrls(String content, List<String> mediaUrls) {
         PostRequest request = new PostRequest(userId, content, selectedVisibility, mediaUrls);
-        // ❗ Sửa chỗ này: thêm kiểu <PostResponse>
+
         apiService.createPost(request).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
@@ -232,7 +239,15 @@ public class Home_Fragment extends Fragment {
                     if (postDialog != null && postDialog.isShowing()) postDialog.dismiss();
                     loadPosts();
                 } else {
-                    showToastSafe("Lỗi đăng bài: " + response.code());
+                    String errorMessage = "Lỗi đăng bài: " + response.code();
+                    if (response.errorBody() != null) {
+                        try {
+                            errorMessage += " - " + response.errorBody().string();
+                        } catch (IOException e) {
+                            Log.e("Home_Fragment", "Error reading errorBody", e);
+                        }
+                    }
+                    showToastSafe(errorMessage);
                 }
             }
 
@@ -245,9 +260,7 @@ public class Home_Fragment extends Fragment {
         });
     }
 
-    // ✅ Load bài viết cộng đồng
     private void loadPosts() {
-        // ❗ Sửa chỗ này: thêm kiểu <List<Post>>
         apiService.getAllPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
@@ -316,7 +329,9 @@ public class Home_Fragment extends Fragment {
                 Log.e("GetFileName", "Lỗi lấy tên file: " + e.getMessage());
             }
         }
-        if (result == null) result = "image_" + System.currentTimeMillis() + ".jpg";
+        if (result == null) {
+            result = "image_" + System.currentTimeMillis() + ".jpg";
+        }
         return result;
     }
 }

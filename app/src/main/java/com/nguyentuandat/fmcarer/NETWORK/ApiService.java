@@ -149,32 +149,32 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("childId") String childId // Tên @Path "childId" khớp với backend
     );
-    // ✅ Post APIs
-
+    // ✅ Tạo bài viết mới - Đồng bộ với backend
     @POST("/api/posts")
     Call<PostResponse> createPost(@Body PostRequest postRequest);
 
-    // ✅ Lấy tất cả bài viết
+    // ✅ Lấy tất cả bài viết - Đồng bộ với backend
     @GET("/api/posts")
     Call<List<Post>> getAllPosts();
 
-    // ✅ Lấy danh sách bài viết theo userId (lọc theo user)
-    @GET("/api/posts")
+    // ⚠️ Lấy danh sách bài viết theo userId (lọc theo user)
+    // Để API này hoạt động, bạn CẦN THÊM logic xử lý query parameter hoặc
+    // một endpoint riêng biệt cho việc lọc này ở backend (postController.js).
+    // Giả sử backend sẽ lắng nghe query param "userId" trên endpoint /api/posts
+    // HOẶC nếu bạn tạo endpoint riêng, ví dụ: @GET("/api/posts/by-user")
+    @GET("/api/posts") // Hoặc @GET("/api/posts/by-user") nếu bạn tạo route riêng
     Call<List<Post>> getPostsByUserId(@Query("userId") String userId);
 
-    // ✅ Cập nhật bài viết
+    // ✅ Cập nhật bài viết - Đồng bộ với backend
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") String postId, @Body Post updatedPost);
 
-    // ✅ Xóa bài viết
+    // ✅ Xóa bài viết - Đồng bộ với backend (Bỏ userId khỏi @Query)
+    // Backend hiện tại chỉ dùng postId từ path, không dùng userId từ query.
     @DELETE("/api/posts/{postId}")
-    Call<ApiResponse> deletePost(@Path("postId") String postId, @Query("user_id") String userId);
+    Call<ApiResponse> deletePost(@Path("postId") String postId); // Đã loại bỏ @Query("user_id")
 
-
-
-    // MARK: - API UPLOAD ẢNH
-
-    // ✅ Upload một ảnh
+ //✅ Upload một ảnh
     // Sử dụng @Multipart để chỉ định đây là request dạng multipart/form-data
     // @Part MultipartBody.Part "image" phải khớp với tên trường 'image' ở backend (upload.single('image'))
     @Multipart
@@ -187,6 +187,45 @@ public interface ApiService {
     @Multipart
     @POST("/api/upload-multiple")
     Call<MultiImageUploadResponse> uploadMultipleImages(@Part List<MultipartBody.Part> images);
+
+
+//    // ✅ Post APIs
+//
+//    @POST("/api/posts")
+//    Call<PostResponse> createPost(@Body PostRequest postRequest);
+//
+//    // ✅ Lấy tất cả bài viết
+//    @GET("/api/posts")
+//    Call<List<Post>> getAllPosts();
+//
+//    // ✅ Lấy danh sách bài viết theo userId (lọc theo user)
+//    @GET("/api/posts")
+//    Call<List<Post>> getPostsByUserId(@Query("userId") String userId);
+//
+//    // ✅ Cập nhật bài viết
+//    @PUT("/api/posts/{postId}")
+//    Call<Post> updatePost(@Path("postId") String postId, @Body Post updatedPost);
+//
+//    // ✅ Xóa bài viết
+//    @DELETE("/api/posts/{postId}")
+//    Call<ApiResponse> deletePost(@Path("postId") String postId, @Query("user_id") String userId);
+//
+//
+//    // MARK: - API UPLOAD ẢNH
+//
+//    // ✅ Upload một ảnh
+//    // Sử dụng @Multipart để chỉ định đây là request dạng multipart/form-data
+//    // @Part MultipartBody.Part "image" phải khớp với tên trường 'image' ở backend (upload.single('image'))
+//    @Multipart
+//    @POST("/api/upload")
+//    Call<ImageUploadResponse> uploadSingleImage(@Part MultipartBody.Part image);
+//
+//    // ✅ Upload nhiều ảnh cùng lúc
+//    // Sử dụng List<MultipartBody.Part> để gửi nhiều file.
+//    // Tên trường "images" phải khớp với tên trường 'images' ở backend (upload.array('images', ...))
+//    @Multipart
+//    @POST("/api/upload-multiple")
+//    Call<MultiImageUploadResponse> uploadMultipleImages(@Part List<MultipartBody.Part> images);
 
     Call<UserResponse> uploadImage(MultipartBody.Part avatarPart);
 

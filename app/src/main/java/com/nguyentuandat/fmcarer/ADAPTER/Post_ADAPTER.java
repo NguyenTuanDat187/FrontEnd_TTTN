@@ -35,16 +35,20 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
     private final Context context;
     private final List<Post> postList;
     private final ApiService apiService;
-    private final String currentUserId;
+    private final String currentUserId; // ID của người dùng đang đăng nhập
+
+    // Hằng số cho tên SharedPreferences, khớp với nơi Login_Activity lưu token và thông tin người dùng
+    private static final String PREF_USER_SESSION = "user_session";
+    private static final String KEY_USER_ID = "_id";
 
     public Post_ADAPTER(Context context, List<Post> postList, ApiService apiService) {
         this.context = context;
         this.postList = postList;
         this.apiService = apiService;
 
-        // Lấy ID người dùng hiện tại từ SharedPreferences
-        SharedPreferences prefs = context.getSharedPreferences("USER", Context.MODE_PRIVATE);
-        currentUserId = prefs.getString("_id", "");
+        // ✅ Lấy ID người dùng hiện tại từ SharedPreferences "user_session"
+        SharedPreferences prefs = context.getSharedPreferences(PREF_USER_SESSION, Context.MODE_PRIVATE);
+        currentUserId = prefs.getString(KEY_USER_ID, "");
     }
 
     @NonNull
@@ -89,7 +93,8 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
         }
 
         // Đặt OnLongClickListener chỉ khi bài viết thuộc về người dùng hiện tại
-        if (currentUserId.equals(post.getUserId())) {
+        // So sánh ID của người dùng hiện tại với ID người đăng bài
+        if (currentUserId != null && currentUserId.equals(post.getUserId())) {
             holder.itemView.setOnLongClickListener(v -> {
                 showOptionsDialog(post, position); // Hiển thị tùy chọn Sửa/Xóa
                 return true; // Xử lý sự kiện long click
@@ -112,7 +117,8 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
                 .setTitle("Tùy chọn bài viết")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
-                        Toast.makeText(context, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Tính năng sửa đang phát triển", Toast.LENGTH_SHORT).show();
+                        // TODO: Triển khai logic sửa bài viết tại đây
                     } else {
                         confirmDelete(post.get_id(), position); // Xác nhận xóa
                     }
@@ -132,7 +138,8 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
 
     // Gửi yêu cầu xóa bài viết lên API
     private void deletePost(String postId, int position) {
-        apiService.deletePost(postId, currentUserId).enqueue(new Callback<ApiResponse>() {
+        // ✅ Bỏ currentUserId khỏi tham số của deletePost vì AuthInterceptor sẽ tự thêm token
+        apiService.deletePost(postId).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
@@ -140,7 +147,7 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
                     notifyItemRemoved(position); // Thông báo cho Adapter để cập nhật RecyclerView
                     Toast.makeText(context, "Đã xóa bài viết", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Xóa bài viết thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Xóa bài viết thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -156,8 +163,9 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
         if (raw == null) return "Không xác định";
         switch (raw) {
             case "private": return "Riêng tư";
-            case "family": return "Gia đình";
             case "public": return "Cộng đồng";
+            // ✅ Đã đổi từ "family" sang "friends" để khớp với backend
+            case "friends": return "Bạn bè";
             default: return "Không xác định";
         }
     }
@@ -171,7 +179,7 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
     private String formatDate(String rawDate) {
         if (rawDate == null || rawDate.isEmpty()) return "";
         try {
-            // Parser cho định dạng ISO 8601
+            // Parser cho định dạng ISO 8601 (có 'Z' cho UTC)
             SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
             Date date = parser.parse(rawDate);
             // Formatter cho định dạng mong muốn

@@ -34,8 +34,10 @@ public class Login_Activity extends AppCompatActivity {
     private SharedPreferences loginPrefs;
     private static final String PREF_LOGIN_CREDS = "login_credentials";
     private static final String PREF_USER_SESSION = "user_session";
+    private static final String KEY_AUTH_TOKEN = "token"; // Hằng số cho key của token
 
     private ApiService apiService;
+    private static final String TAG = "Login_Activity"; // Tag cho Logcat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class Login_Activity extends AppCompatActivity {
         loginPrefs = getSharedPreferences(PREF_LOGIN_CREDS, MODE_PRIVATE);
         loadSavedCredentials();
 
+        // ✅ Khởi tạo ApiService ngay sau khi UI được thiết lập
         apiService = RetrofitClient.getInstance(this).create(ApiService.class);
 
         btnLogin.setOnClickListener(view -> attemptLogin());
@@ -74,10 +77,14 @@ public class Login_Activity extends AppCompatActivity {
         }
 
         // Nếu có token đã lưu → vào thẳng Dashboard
-        String savedToken = getSharedPreferences(PREF_USER_SESSION, MODE_PRIVATE).getString("token", null);
+        String savedToken = getSharedPreferences(PREF_USER_SESSION, MODE_PRIVATE).getString(KEY_AUTH_TOKEN, null);
+        // ✅ Log token được tìm thấy khi khởi tạo Activity
         if (savedToken != null && !savedToken.isEmpty()) {
+            Log.d(TAG, "onCreate: Found saved token, navigating to Dashboard. Token (first 10 chars): " + savedToken.substring(0, Math.min(savedToken.length(), 10)));
             startActivity(new Intent(this, Dashboar_Activity.class));
             finish();
+        } else {
+            Log.d(TAG, "onCreate: No saved token found or token is empty.");
         }
     }
 
@@ -120,6 +127,9 @@ public class Login_Activity extends AppCompatActivity {
                     UserResponse.UserData user = response.body().getUser();
                     String token = response.body().getAccessToken();
 
+                    // ✅ Log token nhận được từ API
+                    Log.d(TAG, "onResponse: Login successful. Received Token (first 10 chars): " + (token != null ? token.substring(0, Math.min(token.length(), 10)) : "null"));
+
                     if (user != null && token != null && !token.isEmpty()) {
                         saveUserSession(user, token);
 
@@ -135,6 +145,7 @@ public class Login_Activity extends AppCompatActivity {
                         Toast.makeText(Login_Activity.this, "✅ Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(Login_Activity.this, "Dữ liệu đăng nhập không hợp lệ!", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "onResponse: User data or token is null/empty after successful response.");
                     }
                 } else {
                     handleLoginError(response);
@@ -143,7 +154,7 @@ public class Login_Activity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                Log.e("API_LOGIN", "Lỗi kết nối", t);
+                Log.e(TAG, "API_LOGIN: Lỗi kết nối", t);
                 Toast.makeText(Login_Activity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -157,20 +168,27 @@ public class Login_Activity extends AppCompatActivity {
         editor.putString("image", user.getImage());
         editor.putString("email", user.getEmail());
         editor.putString("role", user.getRole());
-        editor.putString("token", token);
+        editor.putString(KEY_AUTH_TOKEN, token); // Sử dụng hằng số cho key của token
+
+        // ✅ Log token ngay trước khi apply()
+        Log.d(TAG, "saveUserSession: Attempting to save token (first 10 chars): " + (token != null ? token.substring(0, Math.min(token.length(), 10)) : "null"));
         editor.apply();
+        Log.d(TAG, "saveUserSession: Token and user data applied to SharedPreferences.");
     }
 
     private void handleLoginError(Response<UserResponse> response) {
         String errorMessage = "Đăng nhập thất bại!";
         try {
             if (response.errorBody() != null) {
-                errorMessage = response.errorBody().string();
+                String errorBodyString = response.errorBody().string();
+                // ✅ Log errorBody để xem chi tiết lỗi từ server
+                Log.e(TAG, "handleLoginError: Error Body: " + errorBodyString);
+                errorMessage = errorBodyString; // Có thể server trả về message lỗi trực tiếp trong errorBody
             } else if (response.body() != null && response.body().getMessage() != null) {
                 errorMessage = response.body().getMessage();
             }
         } catch (Exception e) {
-            Log.e("LOGIN_ERROR", "Lỗi đọc message", e);
+            Log.e(TAG, "LOGIN_ERROR: Lỗi đọc message từ errorBody", e);
         }
         Toast.makeText(Login_Activity.this, errorMessage, Toast.LENGTH_LONG).show();
     }
