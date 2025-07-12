@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -30,12 +31,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nguyentuandat.fmcarer.FRAGMENT.*;
-import com.nguyentuandat.fmcarer.MODEL.Care_Schelude;
+import com.nguyentuandat.fmcarer.MODEL.Care_Schelude; // This import might not be directly used here but kept for completeness
 import com.nguyentuandat.fmcarer.RESPONSE.UserResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserUpdateRequest;
 import com.nguyentuandat.fmcarer.NETWORK.ApiService;
 import com.nguyentuandat.fmcarer.NETWORK.RetrofitClient;
 import com.nguyentuandat.fmcarer.R;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,11 +48,14 @@ public class Dashboar_Activity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1001;
     private Uri selectedImageUri;
-    private ImageView imgAvatar;
+    private ImageView imgAvatar; // Used in the dialog
     private TextView toolbarTitle;
 
     private ImageView navAvatar;
     private TextView navUsername, navEmail;
+
+    // Declare ApiService at class level if it's used across multiple methods
+    private ApiService apiService;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -75,6 +81,10 @@ public class Dashboar_Activity extends AppCompatActivity {
         navAvatar = headerView.findViewById(R.id.imgAvatar);
         navUsername = headerView.findViewById(R.id.txtUsername);
         navEmail = headerView.findViewById(R.id.txtEmail);
+
+        // Initialize ApiService for authenticated calls
+        // This is done once for the activity.
+        this.apiService = RetrofitClient.getInstance(this).create(ApiService.class);
 
         loadHeaderData();
 
@@ -121,20 +131,25 @@ public class Dashboar_Activity extends AppCompatActivity {
         // 🛡️ Kiểm tra token
         String token = prefs.getString("token", "");
         if (token == null || token.isEmpty()) {
+            // If token is missing, redirect to Login_Activity
             startActivity(new Intent(this, Login_Activity.class));
             finish();
-            return;
+            return; // Important: return after starting new activity to prevent further execution
         }
 
         String fullname = prefs.getString("fullname", "");
         String phone = prefs.getString("numberphone", "");
         String image = prefs.getString("image", "");
 
+        // Show update dialog if user info is incomplete
         if (fullname.isEmpty() || phone.isEmpty() || image.isEmpty()) {
             new Handler().postDelayed(this::showUpdateDialog, 1000);
         }
     }
 
+    /**
+     * Loads user data into the navigation drawer header.
+     */
     private void loadHeaderData() {
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String name = prefs.getString("fullname", "Tên chưa cập nhật");
@@ -145,9 +160,17 @@ public class Dashboar_Activity extends AppCompatActivity {
         navEmail.setText(email);
         if (!image.isEmpty()) {
             Glide.with(this).load(image).placeholder(R.drawable.taikhoan).error(R.drawable.taikhoan).into(navAvatar);
+        } else {
+            // Set a default image if currentImage is empty
+            Glide.with(this).load(R.drawable.taikhoan).into(navAvatar);
         }
     }
 
+    /**
+     * Replaces the current fragment in the container and updates the toolbar title.
+     * @param fragment The new fragment to display.
+     * @param title The title for the toolbar.
+     */
     private void replaceFragment(androidx.fragment.app.Fragment fragment, String title) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
@@ -157,10 +180,13 @@ public class Dashboar_Activity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a dialog for users to update their profile information.
+     */
     private void showUpdateDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.diglog_infomation_update);
-        dialog.setCancelable(true);
+        dialog.setCancelable(true); // Allow dialog to be dismissed by back button or outside touch
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_background));
@@ -176,19 +202,22 @@ public class Dashboar_Activity extends AppCompatActivity {
         MaterialButton btnChangeAvatar = dialog.findViewById(R.id.btnChangeAvatar);
         TextInputEditText edtFullname = dialog.findViewById(R.id.edtFullname);
         TextInputEditText edtPhone = dialog.findViewById(R.id.edtPhone);
-        imgAvatar = dialog.findViewById(R.id.imgAvatar);
+        imgAvatar = dialog.findViewById(R.id.imgAvatar); // Assign to class-level variable
 
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String userId = prefs.getString("_id", null);
         String currentName = prefs.getString("fullname", "");
         String currentPhone = prefs.getString("numberphone", "");
         String currentImage = prefs.getString("image", "");
-        String token = prefs.getString("token", "");
+        // String token = prefs.getString("token", ""); // Token is already available via class-level apiService
 
         edtFullname.setText(currentName);
         edtPhone.setText(currentPhone);
         if (!currentImage.isEmpty()) {
             Glide.with(this).load(currentImage).into(imgAvatar);
+        } else {
+            // Set a default image if currentImage is empty
+            Glide.with(this).load(R.drawable.taikhoan).into(imgAvatar);
         }
 
         btnBack.setOnClickListener(v -> dialog.dismiss());
@@ -213,11 +242,13 @@ public class Dashboar_Activity extends AppCompatActivity {
                 return;
             }
 
+            // If a new image was selected, use its URI; otherwise, use the current image URL
             String imageUrl = selectedImageUri != null ? selectedImageUri.toString() : currentImage;
             UserUpdateRequest request = new UserUpdateRequest(userId, name, phone, imageUrl);
 
-            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
-            Call<UserResponse> call = apiService.updateUser(request);
+            // ✅ Use the class-level apiService instance which is already authenticated
+            // ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class); // REMOVE THIS LINE
+            Call<UserResponse> call = apiService.updateUser(request); // Use the existing apiService
 
             call.enqueue(new Callback<UserResponse>() {
                 @Override
@@ -225,22 +256,37 @@ public class Dashboar_Activity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         Toast.makeText(Dashboar_Activity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
 
+                        // Update SharedPreferences with new data
                         prefs.edit()
                                 .putString("fullname", name)
                                 .putString("numberphone", phone)
                                 .putString("image", imageUrl)
                                 .apply();
 
-                        loadHeaderData();
+                        loadHeaderData(); // Reload header data to reflect changes
                         dialog.dismiss();
                     } else {
-                        Toast.makeText(Dashboar_Activity.this, "Lỗi cập nhật", Toast.LENGTH_SHORT).show();
+                        String errorMessage = "Lỗi cập nhật.";
+                        try {
+                            if (response.errorBody() != null) {
+                                // Attempt to parse error message from errorBody
+                                String errorBodyString = response.errorBody().string();
+                                JSONObject jObjError = new JSONObject(errorBodyString);
+                                if (jObjError.has("message")) {
+                                    errorMessage += " " + jObjError.getString("message");
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Dashboar_Activity", "Error parsing error body: " + e.getMessage());
+                        }
+                        Toast.makeText(Dashboar_Activity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserResponse> call, Throwable t) {
                     Toast.makeText(Dashboar_Activity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("Dashboar_Activity", "API call failed: " + t.getMessage(), t);
                 }
             });
         });
@@ -253,7 +299,10 @@ public class Dashboar_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            Glide.with(this).load(selectedImageUri).into(imgAvatar);
+            // Load selected image into the dialog's ImageView
+            if (imgAvatar != null) { // Ensure imgAvatar is initialized
+                Glide.with(this).load(selectedImageUri).into(imgAvatar);
+            }
         }
     }
 

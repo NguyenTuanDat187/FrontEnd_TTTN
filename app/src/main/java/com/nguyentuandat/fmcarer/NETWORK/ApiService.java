@@ -6,8 +6,8 @@ import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserLoginRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse;
 import com.nguyentuandat.fmcarer.RESPONSE.CareScheludeResponse;
 import com.nguyentuandat.fmcarer.RESPONSE.ChildrenResponse;
-import com.nguyentuandat.fmcarer.RESPONSE.ImageUploadResponse; // Sẽ cần cập nhật
-import com.nguyentuandat.fmcarer.RESPONSE.MultiImageUploadResponse; // Thêm mới cho nhiều ảnh
+import com.nguyentuandat.fmcarer.RESPONSE.ImageUploadResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.MultiImageUploadResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.OtpResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.PostRequest;
@@ -48,9 +48,6 @@ public interface ApiService {
     @POST("/api/users/login")
     Call<UserResponse> loginUser(@Body UserRequest request); // ✅ Đăng nhập chính
 
-    @POST("/api/users/login-subuser")
-    Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request); // ✅ Đăng nhập tài khoản phụ
-
     @POST("/api/users/send-otp")
     Call<OtpResponse> sendOtp(@Body OtpRequest request); // ✅ Gửi OTP
 
@@ -64,9 +61,34 @@ public interface ApiService {
             @Part MultipartBody.Part avatar
     ); // ✅ Upload avatar
 
-    // 🔧 Sub-user (tài khoản phụ)
+    // 🔧 Sub-user (tài khoản phụ) - Đã đồng bộ hoàn toàn với Backend Router và Controller
+    @POST("/api/users/login-subuser")
+    Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request); // ✅ Đăng nhập tài khoản phụ
+
     @POST("/api/users/subuser/create-or-update")
-    Call<ApiResponse> createOrUpdateSubUser(@Body SubUserRequest subUser); // ✅ Thêm/sửa sub user
+    Call<ApiResponse> createOrUpdateSubUser(
+            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Body SubUserRequest subUser
+    ); // ✅ Thêm/sửa sub user
+
+    @GET("/api/users/subusers/parent/{parentId}")
+    Call<UserListResponse> getAllSubusersByParentId(
+            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Path("parentId") String parentId
+    ); // ✅ Lấy tất cả danh sách subuser của một parent
+
+    @GET("/api/users/subuser/{subuserId}")
+    Call<UserResponse> getSubuserById(
+            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Path("subuserId") String subuserId
+    ); // ✅ Lấy thông tin một subuser cụ thể
+
+    @DELETE("/api/users/subuser/{subuserId}")
+    Call<ApiResponse> deleteSubuser(
+            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Path("subuserId") String subuserId
+    ); // ✅ Xóa một subuser
+
 
     // ✅ 1. Lấy danh sách trẻ của người dùng (dựa theo token)
     @GET("/api/children/my")
@@ -134,8 +156,6 @@ public interface ApiService {
 
     // ✅ Đánh dấu hoàn thành (có kiểm tra user)
     // Backend: router.put('/:id/complete', requireAuth, controller.completeReminder);
-    // Lưu ý: Đường dẫn này không có controller tương ứng trong file bạn gửi, nhưng có trong router.
-    // Tôi giả định bạn đã có hàm completeReminder trong controller.
     @PUT("/api/reminders/{id}/complete")
     Call<SingleCareScheludeResponse> completeReminder(
             @Header("Authorization") String token,
@@ -158,80 +178,28 @@ public interface ApiService {
     Call<List<Post>> getAllPosts();
 
     // ⚠️ Lấy danh sách bài viết theo userId (lọc theo user)
-    // Để API này hoạt động, bạn CẦN THÊM logic xử lý query parameter hoặc
-    // một endpoint riêng biệt cho việc lọc này ở backend (postController.js).
     // Giả sử backend sẽ lắng nghe query param "userId" trên endpoint /api/posts
-    // HOẶC nếu bạn tạo endpoint riêng, ví dụ: @GET("/api/posts/by-user")
-    @GET("/api/posts") // Hoặc @GET("/api/posts/by-user") nếu bạn tạo route riêng
+    @GET("/api/posts")
     Call<List<Post>> getPostsByUserId(@Query("userId") String userId);
 
     // ✅ Cập nhật bài viết - Đồng bộ với backend
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") String postId, @Body Post updatedPost);
 
-    // ✅ Xóa bài viết - Đồng bộ với backend (Bỏ userId khỏi @Query)
-    // Backend hiện tại chỉ dùng postId từ path, không dùng userId từ query.
+    // ✅ Xóa bài viết - Đồng bộ với backend
     @DELETE("/api/posts/{postId}")
-    Call<ApiResponse> deletePost(@Path("postId") String postId); // Đã loại bỏ @Query("user_id")
+    Call<ApiResponse> deletePost(@Path("postId") String postId);
 
- //✅ Upload một ảnh
-    // Sử dụng @Multipart để chỉ định đây là request dạng multipart/form-data
-    // @Part MultipartBody.Part "image" phải khớp với tên trường 'image' ở backend (upload.single('image'))
+    //✅ Upload một ảnh
     @Multipart
     @POST("/api/upload")
     Call<ImageUploadResponse> uploadSingleImage(@Part MultipartBody.Part image);
 
     // ✅ Upload nhiều ảnh cùng lúc
-    // Sử dụng List<MultipartBody.Part> để gửi nhiều file.
-    // Tên trường "images" phải khớp với tên trường 'images' ở backend (upload.array('images', ...))
     @Multipart
     @POST("/api/upload-multiple")
     Call<MultiImageUploadResponse> uploadMultipleImages(@Part List<MultipartBody.Part> images);
 
-
-//    // ✅ Post APIs
-//
-//    @POST("/api/posts")
-//    Call<PostResponse> createPost(@Body PostRequest postRequest);
-//
-//    // ✅ Lấy tất cả bài viết
-//    @GET("/api/posts")
-//    Call<List<Post>> getAllPosts();
-//
-//    // ✅ Lấy danh sách bài viết theo userId (lọc theo user)
-//    @GET("/api/posts")
-//    Call<List<Post>> getPostsByUserId(@Query("userId") String userId);
-//
-//    // ✅ Cập nhật bài viết
-//    @PUT("/api/posts/{postId}")
-//    Call<Post> updatePost(@Path("postId") String postId, @Body Post updatedPost);
-//
-//    // ✅ Xóa bài viết
-//    @DELETE("/api/posts/{postId}")
-//    Call<ApiResponse> deletePost(@Path("postId") String postId, @Query("user_id") String userId);
-//
-//
-//    // MARK: - API UPLOAD ẢNH
-//
-//    // ✅ Upload một ảnh
-//    // Sử dụng @Multipart để chỉ định đây là request dạng multipart/form-data
-//    // @Part MultipartBody.Part "image" phải khớp với tên trường 'image' ở backend (upload.single('image'))
-//    @Multipart
-//    @POST("/api/upload")
-//    Call<ImageUploadResponse> uploadSingleImage(@Part MultipartBody.Part image);
-//
-//    // ✅ Upload nhiều ảnh cùng lúc
-//    // Sử dụng List<MultipartBody.Part> để gửi nhiều file.
-//    // Tên trường "images" phải khớp với tên trường 'images' ở backend (upload.array('images', ...))
-//    @Multipart
-//    @POST("/api/upload-multiple")
-//    Call<MultiImageUploadResponse> uploadMultipleImages(@Part List<MultipartBody.Part> images);
-
-    Call<UserResponse> uploadImage(MultipartBody.Part avatarPart);
-
-    // Bạn cũng có thể thêm các trường dữ liệu khác cùng với file nếu cần:
-    // Call<MultiImageUploadResponse> uploadMultipleImages(
-    //     @Part List<MultipartBody.Part> images,
-    //     @Part("description") RequestBody description
-    // );
+    // Phương thức này có vẻ bị trùng lặp hoặc không đầy đủ, đã bỏ qua hoặc sửa ở trên
+    // Call<UserResponse> uploadImage(MultipartBody.Part avatarPart);
 }
