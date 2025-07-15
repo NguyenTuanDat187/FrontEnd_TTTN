@@ -13,15 +13,6 @@
         android:orientation="vertical">
 
         <!-- 🧾 Tiêu đề -->
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="💰 Nạp tiền / Gia hạn tài khoản"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="24dp" />
 
         <!-- 💵 Nhập số tiền -->
         <com.google.android.material.textfield.TextInputLayout
@@ -72,12 +63,6 @@
                 android:text="VNPay"
                 android:textSize="14sp" />
 
-            <RadioButton
-                android:id="@+id/radioBank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chuyển khoản ngân hàng"
-                android:textSize="14sp" />
         </RadioGroup>
 
         <!-- 🔘 Nút xác nhận -->

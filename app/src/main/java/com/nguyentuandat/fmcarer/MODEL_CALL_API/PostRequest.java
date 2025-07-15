@@ -21,7 +21,6 @@ public class PostRequest {
     @SerializedName("mediaUrls") // Khớp với media_urls ở backend
     private List<String> mediaUrls;
 
-    // ✅ Constructor mới: KHÔNG CÓ userName VÀ userAvatar
     public PostRequest(String userId, String content, String selectedVisibility, List<String> mediaUrls) {
         this.userId = userId;
         this.content = content;

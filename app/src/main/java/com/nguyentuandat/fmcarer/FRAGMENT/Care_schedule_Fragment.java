@@ -191,8 +191,8 @@ public class Care_schedule_Fragment extends Fragment {
     private void openCreateReminderDialog() {
         // Kiểm tra xem có trẻ em nào để tạo nhắc nhở không
         if (childrenList.isEmpty()) {
-            Toast.makeText(requireContext(), "Bạn chưa có trẻ em nào. Vui lòng thêm trẻ trước khi tạo nhắc nhở.", Toast.LENGTH_LONG).show();
-            return; // Không mở dialog nếu không có trẻ
+            Toast.makeText(requireContext(), " Vui lòng thêm trẻ trước khi tạo nhắc nhở.", Toast.LENGTH_LONG).show();
+            return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -295,10 +295,6 @@ public class Care_schedule_Fragment extends Fragment {
             data.put("reminder_time", time);
             data.put("repeat", repeat);
             data.put("repeat_type", repeatType);
-
-            Log.d("CREATE_REMINDER_DATA", "Body gửi API: " + data.toString());
-            Log.d("CREATE_REMINDER_DATA", "Token: " + bearerToken);
-
 
             // Gọi API tạo nhắc nhở
             apiService.createReminder(bearerToken, data).enqueue(new Callback<SingleCareScheludeResponse>() {

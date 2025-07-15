@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -154,8 +155,15 @@ public class Care_schedule_ADAPTER extends RecyclerView.Adapter<Care_schedule_AD
         // Xử lý nút "Hoàn thành"
         holder.tvComplete.setText(schedule.isCompleted() ? "Đã hoàn thành" : "Hoàn thành");
         holder.tvComplete.setEnabled(!schedule.isCompleted()); // Vô hiệu hóa nút nếu đã hoàn thành
-        holder.tvComplete.setAlpha(schedule.isCompleted() ? 0.6f : 1f); // Giảm độ mờ nếu đã hoàn thành
-
+        if (schedule.isCompleted()) {
+            // Nếu đã hoàn thành: đặt màu xanh lá và giảm độ mờ
+            holder.tvComplete.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.green_completed));
+            holder.tvComplete.setAlpha(0.6f);
+        } else {
+            // Nếu chưa hoàn thành: đặt lại màu mặc định (ví dụ: đen) và độ mờ đầy đủ
+            holder.tvComplete.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.default_text_color)); // Hoặc màu đen trực tiếp: Color.BLACK
+            holder.tvComplete.setAlpha(1f);
+        }
         holder.tvComplete.setOnClickListener(v -> {
             if (!schedule.isCompleted()) { // Chỉ cho phép hoàn thành nếu chưa hoàn thành
                 // Hiển thị dialog xác nhận trước khi hoàn thành

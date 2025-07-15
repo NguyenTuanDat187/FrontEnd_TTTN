@@ -1,107 +1,90 @@
 package com.nguyentuandat.fmcarer.MODEL;
 
+import com.google.gson.annotations.SerializedName;
+// import com.google.gson.annotations.Expose; // Thêm nếu bạn sử dụng @Expose
+
 public class User {
-    private String _id;
+
+    @SerializedName("_id")
+    private String id;
+
+    @SerializedName("email")
     private String email;
+
+    @SerializedName("password")
     private String password;
+
+    @SerializedName("role")
     private String role;
-    private String created_by;
-    private String balance;
+
+    @SerializedName("created_by")
+    private String createdBy;
+
+    @SerializedName("balance") // <-- Đảm bảo kiểu dữ liệu là BalanceDecimal128
+    private BalanceDecimal128 balance; // <-- Sử dụng lớp này
+
+    @SerializedName("isVerified")
+    private boolean isVerified; // Thêm trường này nếu nó có trong JSON response
+
+    @SerializedName("fullname")
     private String fullname;
+
+    @SerializedName("numberphone")
     private String numberphone;
+
+    @SerializedName("image")
     private String image;
-    private String created_at;
+
+    @SerializedName("created_at")
+    private String createdAt; // Hoặc java.util.Date nếu bạn cấu hình Gson để parse Date
+
+    @SerializedName("relationship")
+    private String relationship; // Giữ lại nếu nó có trong response
+
+    @SerializedName("__v")
+    private int v; // Thêm trường này nếu nó có trong JSON response
 
     public User() {
-        this._id = _id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.created_by = created_by;
-        this.balance = balance;
-        this.fullname = fullname;
-        this.numberphone = numberphone;
-        this.image = image;
-        this.created_at = created_at;
+        // constructor mặc định
     }
 
-    public String get_id() {
-        return _id;
-    }
+    // --- Getters và Setters cho tất cả các trường ---
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void set_id(String _id) {
-        this._id = _id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public BalanceDecimal128 getBalance() { return balance; } // Getter cho BalanceDecimal128
+    public void setBalance(BalanceDecimal128 balance) { this.balance = balance; } // Setter cho BalanceDecimal128
 
-    public String getRole() {
-        return role;
-    }
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean isVerified) { this.isVerified = isVerified; }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public String getFullname() { return fullname; }
+    public void setFullname(String fullname) { this.fullname = fullname; }
 
-    public String getCreated_by() {
-        return created_by;
-    }
+    public String getNumberphone() { return numberphone; }
+    public void setNumberphone(String numberphone) { this.numberphone = numberphone; }
 
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
-    }
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 
-    public String getBalance() {
-        return balance;
-    }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
-    public void setBalance(String balance) {
-        this.balance = balance;
-    }
+    public String getRelationship() { return relationship; }
+    public void setRelationship(String relationship) { this.relationship = relationship; }
 
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getNumberphone() {
-        return numberphone;
-    }
-
-    public void setNumberphone(String numberphone) {
-        this.numberphone = numberphone;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
+    public int getV() { return v; }
+    public void setV(int v) { this.v = v; }
 }

@@ -2,6 +2,7 @@ package com.nguyentuandat.fmcarer.NETWORK;
 
 import com.nguyentuandat.fmcarer.MODEL.Children;
 import com.nguyentuandat.fmcarer.MODEL.Post;
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.PasswordVerificationRequest;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserLoginRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse;
 import com.nguyentuandat.fmcarer.RESPONSE.CareScheludeResponse;
@@ -39,7 +40,7 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     // 🔒 USER AUTHENTICATION
-    @GET("/api/users")
+    @GET("/api/users/users")
     Call<UserListResponse> getAllUsers(); // ✅ Trả về danh sách users (ẩn password)
 
     @POST("/api/users/register")
@@ -54,6 +55,13 @@ public interface ApiService {
     @POST("/api/users/update")
     Call<UserResponse> updateUser(@Body UserUpdateRequest request); // ✅ Cập nhật user
 
+    // Endpoint mới để xác thực mật khẩu người dùng chính
+    @POST("/api/users/verify-password") // <<< Endpoint mới
+    Call<ApiResponse> verifyUserPassword(
+            @Header("Authorization") String authToken,
+            @Body PasswordVerificationRequest request
+    );
+
     @Multipart
     @POST("/api/users/upload-avatar")
     Call<UserResponse> uploadImage(
@@ -61,34 +69,49 @@ public interface ApiService {
             @Part MultipartBody.Part avatar
     ); // ✅ Upload avatar
 
-    // 🔧 Sub-user (tài khoản phụ) - Đã đồng bộ hoàn toàn với Backend Router và Controller
-    @POST("/api/users/login-subuser")
-    Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request); // ✅ Đăng nhập tài khoản phụ
-
+    // ✅ TẠO tài khoản phụ mới
+    // Endpoint: POST /api/users/subuser
+    // Gửi toàn bộ thông tin SubUserRequest (không có _id)
     @POST("/api/users/subuser/create-or-update")
     Call<ApiResponse> createOrUpdateSubUser(
             @Header("Authorization") String bearerToken, // Thêm header xác thực
             @Body SubUserRequest subUser
     ); // ✅ Thêm/sửa sub user
 
+    // ✅ CẬP NHẬT tài khoản phụ
+    // Endpoint: PUT /api/users/subuser/{subuserId}
+    // Gửi ID của sub-user trong URL path, và thông tin cập nhật trong body
+    @PUT("/api/users/subuser/{subuserId}")
+    Call<ApiResponse> updateSubUser(
+            @Header("Authorization") String bearerToken,
+            @Path("subuserId") String subuserId, // ID của sub-user cần cập nhật
+            @Body SubUserRequest subUser // Thông tin cập nhật (bao gồm các trường khác)
+    );
+
+    // ✅ Lấy danh sách sub-user của một parent cụ thể (không thay đổi)
     @GET("/api/users/subusers/parent/{parentId}")
     Call<UserListResponse> getAllSubusersByParentId(
-            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Header("Authorization") String bearerToken,
             @Path("parentId") String parentId
-    ); // ✅ Lấy tất cả danh sách subuser của một parent
+    );
 
+    // ✅ Lấy thông tin một sub-user cụ thể (không thay đổi)
     @GET("/api/users/subuser/{subuserId}")
     Call<UserResponse> getSubuserById(
-            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Header("Authorization") String bearerToken,
             @Path("subuserId") String subuserId
-    ); // ✅ Lấy thông tin một subuser cụ thể
+    );
 
+    // ✅ Xóa một sub-user (không thay đổi)
     @DELETE("/api/users/subuser/{subuserId}")
     Call<ApiResponse> deleteSubuser(
-            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Header("Authorization") String bearerToken,
             @Path("subuserId") String subuserId
-    ); // ✅ Xóa một subuser
+    );
 
+    // ✅ Đăng nhập sub-user (không thay đổi)
+    @POST("/api/users/login-subuser")
+    Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request);
 
     // ✅ 1. Lấy danh sách trẻ của người dùng (dựa theo token)
     @GET("/api/children/my")
