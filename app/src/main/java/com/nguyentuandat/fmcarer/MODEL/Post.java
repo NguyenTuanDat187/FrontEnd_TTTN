@@ -1,141 +1,106 @@
+// com.nguyentuandat.fmcarer.MODEL.Post.java
+
 package com.nguyentuandat.fmcarer.MODEL;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Post {
-
     @SerializedName("_id")
     private String _id;
 
-    @SerializedName("id_user")
-    private String userId;
+    // RẤT QUAN TRỌNG: Đây phải là đối tượng User, không phải String
+    // và tên trường JSON phải khớp với tên bạn gửi từ backend (ví dụ: "user")
+    @SerializedName("user") // Đây là tên trường mà controller backend đã sửa để trả về
+    private User user; // Đảm bảo đây là đối tượng User
 
-    @SerializedName("fullname")
+    @SerializedName("fullname") // Có thể giữ lại làm fallback hoặc cho mục đích hiển thị nhanh
     private String fullname;
 
-    @SerializedName("image")
+    @SerializedName("image") // Có thể giữ lại làm fallback hoặc cho mục đích hiển thị nhanh
     private String image;
 
     @SerializedName("content")
     private String content;
 
+    @SerializedName("media_urls")
+    private List<String> mediaUrls;
+
     @SerializedName("visibility")
     private String visibility;
 
     @SerializedName("status")
-    private String status;
+    private String status; // "pending", "active", "rejected"
 
-    @SerializedName("media_urls")
-    private List<String> mediaUrls;
-
-    @SerializedName("total_comments")
-    private int total_comments;
-
-    @SerializedName("total_likes")
-    private int total_likes;
+    @SerializedName("rejectionReason")
+    private String rejectionReason;
 
     @SerializedName("created_at")
-    private String created_at;
+    private String created_at; // Date string
 
     @SerializedName("updated_at")
-    private String updated_at;
+    private String updated_at; // Date string
 
-    public Post() {}
+    // Constructor (optional, depending on your needs for object creation)
+    public Post(String _id, User user, String fullname, String image, String content, List<String> mediaUrls, String visibility, String status, String rejectionReason, String created_at, String updated_at) {
+        this._id = _id;
+        this.user = user;
+        this.fullname = fullname;
+        this.image = image;
+        this.content = content;
+        this.mediaUrls = mediaUrls;
+        this.visibility = visibility;
+        this.status = status;
+        this.rejectionReason = rejectionReason;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
 
+    // Getters
     public String get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public User getUser() { // Getter cho đối tượng User
+        return user;
     }
 
     public String getFullname() {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public List<String> getMediaUrls() {
+        return mediaUrls;
     }
 
     public String getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<String> getMediaUrls() {
-        return mediaUrls;
-    }
-
-    public void setMediaUrls(List<String> mediaUrls) {
-        this.mediaUrls = mediaUrls;
-    }
-
-    public int getTotal_comments() {
-        return total_comments;
-    }
-
-    public void setTotal_comments(int total_comments) {
-        this.total_comments = total_comments;
-    }
-
-    public int getTotal_likes() {
-        return total_likes;
-    }
-
-    public void setTotal_likes(int total_likes) {
-        this.total_likes = total_likes;
+    public String getRejectionReason() {
+        return rejectionReason;
     }
 
     public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
     public String getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
-    }
+    // Setters (if needed, but usually not for received data)
+    // ...
 }

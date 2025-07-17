@@ -2,8 +2,10 @@ package com.nguyentuandat.fmcarer.NETWORK;
 
 import com.nguyentuandat.fmcarer.MODEL.Children;
 import com.nguyentuandat.fmcarer.MODEL.Post;
+import com.nguyentuandat.fmcarer.MODEL.Payment; // Import Payment model
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.PasswordVerificationRequest;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.SubUserLoginRequest;
+import com.nguyentuandat.fmcarer.MODEL_CALL_API.TopUpInitiateRequest; // Import TopUpInitiateRequest
 import com.nguyentuandat.fmcarer.RESPONSE.ApiResponse;
 import com.nguyentuandat.fmcarer.RESPONSE.CareScheludeResponse;
 import com.nguyentuandat.fmcarer.RESPONSE.ChildrenResponse;
@@ -13,6 +15,8 @@ import com.nguyentuandat.fmcarer.MODEL_CALL_API.OtpRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.OtpResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.PostRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.PostResponse;
+import com.nguyentuandat.fmcarer.RESPONSE.PaymentResponse; // Import PaymentResponse
+import com.nguyentuandat.fmcarer.RESPONSE.PaymentHistoryResponse; // Import PaymentHistoryResponse
 import com.nguyentuandat.fmcarer.RESPONSE.SingleCareScheludeResponse;
 import com.nguyentuandat.fmcarer.MODEL_CALL_API.UserRequest;
 import com.nguyentuandat.fmcarer.RESPONSE.UserListResponse;
@@ -41,22 +45,22 @@ public interface ApiService {
 
     // 🔒 USER AUTHENTICATION
     @GET("/api/users/users")
-    Call<UserListResponse> getAllUsers(); // ✅ Trả về danh sách users (ẩn password)
+    Call<UserListResponse> getAllUsers();
 
     @POST("/api/users/register")
-    Call<UserResponse> registerUser(@Body UserRequest request); // ✅ Đăng ký
+    Call<UserResponse> registerUser(@Body UserRequest request);
 
     @POST("/api/users/login")
-    Call<UserResponse> loginUser(@Body UserRequest request); // ✅ Đăng nhập chính
+    Call<UserResponse> loginUser(@Body UserRequest request);
 
     @POST("/api/users/send-otp")
-    Call<OtpResponse> sendOtp(@Body OtpRequest request); // ✅ Gửi OTP
+    Call<OtpResponse> sendOtp(@Body OtpRequest request);
 
     @POST("/api/users/update")
-    Call<UserResponse> updateUser(@Body UserUpdateRequest request); // ✅ Cập nhật user
+    Call<UserResponse> updateUser(@Body UserUpdateRequest request);
 
     // Endpoint mới để xác thực mật khẩu người dùng chính
-    @POST("/api/users/verify-password") // <<< Endpoint mới
+    @POST("/api/users/verify-password")
     Call<ApiResponse> verifyUserPassword(
             @Header("Authorization") String authToken,
             @Body PasswordVerificationRequest request
@@ -67,101 +71,76 @@ public interface ApiService {
     Call<UserResponse> uploadImage(
             @Part("userId") RequestBody userId,
             @Part MultipartBody.Part avatar
-    ); // ✅ Upload avatar
+    );
 
-    // ✅ TẠO tài khoản phụ mới
-    // Endpoint: POST /api/users/subuser
-    // Gửi toàn bộ thông tin SubUserRequest (không có _id)
     @POST("/api/users/subuser/create-or-update")
     Call<ApiResponse> createOrUpdateSubUser(
-            @Header("Authorization") String bearerToken, // Thêm header xác thực
+            @Header("Authorization") String bearerToken,
             @Body SubUserRequest subUser
-    ); // ✅ Thêm/sửa sub user
+    );
 
-    // ✅ CẬP NHẬT tài khoản phụ
-    // Endpoint: PUT /api/users/subuser/{subuserId}
-    // Gửi ID của sub-user trong URL path, và thông tin cập nhật trong body
     @PUT("/api/users/subuser/{subuserId}")
     Call<ApiResponse> updateSubUser(
             @Header("Authorization") String bearerToken,
-            @Path("subuserId") String subuserId, // ID của sub-user cần cập nhật
-            @Body SubUserRequest subUser // Thông tin cập nhật (bao gồm các trường khác)
+            @Path("subuserId") String subuserId,
+            @Body SubUserRequest subUser
     );
 
-    // ✅ Lấy danh sách sub-user của một parent cụ thể (không thay đổi)
     @GET("/api/users/subusers/parent/{parentId}")
     Call<UserListResponse> getAllSubusersByParentId(
             @Header("Authorization") String bearerToken,
             @Path("parentId") String parentId
     );
 
-    // ✅ Lấy thông tin một sub-user cụ thể (không thay đổi)
     @GET("/api/users/subuser/{subuserId}")
     Call<UserResponse> getSubuserById(
             @Header("Authorization") String bearerToken,
             @Path("subuserId") String subuserId
     );
 
-    // ✅ Xóa một sub-user (không thay đổi)
     @DELETE("/api/users/subuser/{subuserId}")
     Call<ApiResponse> deleteSubuser(
             @Header("Authorization") String bearerToken,
             @Path("subuserId") String subuserId
     );
 
-    // ✅ Đăng nhập sub-user (không thay đổi)
     @POST("/api/users/login-subuser")
     Call<UserResponse> loginSubUser(@Body SubUserLoginRequest request);
 
-    // ✅ 1. Lấy danh sách trẻ của người dùng (dựa theo token)
+    // ✅ CHILDREN MANAGEMENT
     @GET("/api/children/my")
     Call<ChildrenResponse> getChildrenByUser(@Header("Authorization") String bearerToken);
 
-    // ✅ 2. Lấy chi tiết 1 trẻ theo ID
     @GET("/api/children/{childId}")
     Call<Children> getChildById(@Header("Authorization") String bearerToken, @Path("childId") String childId);
 
-    // ✅ 3. Thêm trẻ mới (dựa theo token)
     @POST("/api/children")
     Call<Children> addChild(@Header("Authorization") String bearerToken, @Body Children child);
 
-    // ✅ 4. Cập nhật thông tin trẻ
     @PUT("/api/children/{childId}")
     Call<Children> updateChild(@Header("Authorization") String bearerToken, @Path("childId") String childId, @Body Children updatedChild);
 
-    // ✅ 5. Xóa trẻ
     @DELETE("/api/children/{childId}")
     Call<Void> deleteChild(@Header("Authorization") String bearerToken, @Path("childId") String childId);
 
-
-    // ✅ Care Schedules / Reminders
-
-
-    // ✅ Tạo reminder mới
-    // Backend: router.post('/', requireAuth, controller.createReminder);
+    // ✅ CARE SCHEDULES / REMINDERS
     @POST("/api/reminders")
     Call<SingleCareScheludeResponse> createReminder(
             @Header("Authorization") String token,
-            @Body Map<String, Object> reminderData // Đổi tên cho rõ ràng hơn
+            @Body Map<String, Object> reminderData
     );
 
-    // ✅ Lấy toàn bộ reminder của user (từ token)
-    // Backend: router.get('/', requireAuth, controller.getRemindersByUser);
     @GET("/api/reminders")
     Call<CareScheludeResponse> getAllReminders(
             @Header("Authorization") String token
     );
 
-    // ✅ Lấy reminder theo ID (có kiểm tra user)
-    // Backend: router.get('/:id', requireAuth, controller.getReminderById);
     @GET("/api/reminders/{id}")
     Call<SingleCareScheludeResponse> getReminderById(
             @Header("Authorization") String token,
-            @Path("id") String reminderId // Tên @Path "id" khớp với backend
+            @Path("id") String reminderId
     );
 
-    // ✅ Cập nhật reminder (có kiểm tra user)
-    // Backend: router.put('/:id', requireAuth, controller.updateReminder);
     @PUT("/api/reminders/{id}")
     Call<SingleCareScheludeResponse> updateReminder(
             @Header("Authorization") String token,
@@ -169,60 +148,93 @@ public interface ApiService {
             @Body Map<String, Object> updateData
     );
 
-    // ✅ Xoá reminder (có kiểm tra user)
-    // Backend: router.delete('/:id', requireAuth, controller.deleteReminder);
     @DELETE("/api/reminders/{id}")
     Call<ApiResponse> deleteReminder(
             @Header("Authorization") String token,
             @Path("id") String reminderId
     );
 
-    // ✅ Đánh dấu hoàn thành (có kiểm tra user)
-    // Backend: router.put('/:id/complete', requireAuth, controller.completeReminder);
     @PUT("/api/reminders/{id}/complete")
     Call<SingleCareScheludeResponse> completeReminder(
             @Header("Authorization") String token,
-            @Path("id") String reminderId // Đổi tên tham số cho nhất quán
+            @Path("id") String reminderId
     );
 
-    // ✅ Lấy danh sách reminder theo childId (có kiểm tra user)
-    // Backend: router.get('/by-child/:childId', requireAuth, controller.getRemindersByChild);
     @GET("/api/reminders/by-child/{childId}")
     Call<CareScheludeResponse> getRemindersByChild(
             @Header("Authorization") String token,
-            @Path("childId") String childId // Tên @Path "childId" khớp với backend
+            @Path("childId") String childId
     );
-    // ✅ Tạo bài viết mới - Đồng bộ với backend
+
+    // ✅ POSTS
     @POST("/api/posts")
     Call<PostResponse> createPost(@Body PostRequest postRequest);
 
-    // ✅ Lấy tất cả bài viết - Đồng bộ với backend
     @GET("/api/posts")
     Call<List<Post>> getAllPosts();
 
-    // ⚠️ Lấy danh sách bài viết theo userId (lọc theo user)
-    // Giả sử backend sẽ lắng nghe query param "userId" trên endpoint /api/posts
     @GET("/api/posts")
     Call<List<Post>> getPostsByUserId(@Query("userId") String userId);
 
-    // ✅ Cập nhật bài viết - Đồng bộ với backend
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") String postId, @Body Post updatedPost);
 
-    // ✅ Xóa bài viết - Đồng bộ với backend
     @DELETE("/api/posts/{postId}")
     Call<ApiResponse> deletePost(@Path("postId") String postId);
 
-    //✅ Upload một ảnh
+    // ✅ IMAGE UPLOAD
     @Multipart
     @POST("/api/upload")
     Call<ImageUploadResponse> uploadSingleImage(@Part MultipartBody.Part image);
 
-    // ✅ Upload nhiều ảnh cùng lúc
     @Multipart
     @POST("/api/upload-multiple")
     Call<MultiImageUploadResponse> uploadMultipleImages(@Part List<MultipartBody.Part> images);
 
-    // Phương thức này có vẻ bị trùng lặp hoặc không đầy đủ, đã bỏ qua hoặc sửa ở trên
-    // Call<UserResponse> uploadImage(MultipartBody.Part avatarPart);
+    // ✅ PAYMENT / TOP-UP ENDPOINTS
+
+    /**
+     * @desc Khởi tạo yêu cầu nạp tiền mới qua Momo.
+     * @route POST /api/payments/topup/initiate
+     * @access Private (cần xác thực người dùng)
+     * @param authToken Token xác thực người dùng (Bearer token).
+     * @param request Chứa amount và payment_method.
+     * @return Call<PaymentResponse> Chứa payUrl để chuyển hướng người dùng.
+     */
+    @POST("/api/payments/topup/initiate")
+    Call<PaymentResponse> initiateTopUp(
+            @Header("Authorization") String authToken,
+            @Body TopUpInitiateRequest request
+    );
+
+    /**
+     * @desc Lấy lịch sử các giao dịch nạp tiền Momo của người dùng.
+     * @route GET /api/payments/topup/history
+     * @access Private (cần xác thực người dùng)
+     * @param authToken Token xác thực người dùng (Bearer token).
+     * @param limit Số lượng bản ghi trên mỗi trang (mặc định 10).
+     * @param skip Số lượng bản ghi bỏ qua (offset).
+     * @return Call<PaymentHistoryResponse> Chứa danh sách các giao dịch và thông tin phân trang.
+     */
+    @GET("/api/payments/topup/history")
+    Call<PaymentHistoryResponse> getTopUpHistory(
+            @Header("Authorization") String authToken,
+            @Query("limit") Integer limit,
+            @Query("skip") Integer skip
+    );
+
+    /**
+     * @desc Lấy chi tiết của một giao dịch nạp tiền Momo cụ thể.
+     * @route GET /api/payments/topup/{id}
+     * @access Private (cần xác thực người dùng)
+     * @param authToken Token xác thực người dùng (Bearer token).
+     * @param paymentId ID của giao dịch cần lấy chi tiết.
+     * @return Call<Payment> Chứa thông tin chi tiết của giao dịch.
+     */
+    @GET("/api/payments/topup/{id}")
+    Call<Payment> getPaymentById(
+            @Header("Authorization") String authToken,
+            @Path("id") String paymentId
+    );
+
 }

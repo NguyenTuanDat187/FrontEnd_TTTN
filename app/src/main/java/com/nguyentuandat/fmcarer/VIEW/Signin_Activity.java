@@ -170,7 +170,6 @@ public class Signin_Activity extends AppCompatActivity {
                 edtOtp.setError("❌ Mã OTP không đúng");
             }
         });
-
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnConfirm.setOnClickListener(v -> dialog.dismiss());
         txtResendOtp.setOnClickListener(v -> {

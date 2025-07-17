@@ -11,20 +11,20 @@ public class User {
     @SerializedName("email")
     private String email;
 
-    @SerializedName("password")
+    @SerializedName("password") // Trường này thường không được trả về cho client vì lý do bảo mật
     private String password;
 
     @SerializedName("role")
     private String role;
 
-    @SerializedName("created_by")
+    @SerializedName("created_by") // Field for admin/carer creating user
     private String createdBy;
 
-    @SerializedName("balance") // <-- Đảm bảo kiểu dữ liệu là BalanceDecimal128
-    private BalanceDecimal128 balance; // <-- Sử dụng lớp này
+    @SerializedName("balance")
+    private BalanceDecimal128 balance; // Sử dụng lớp này cho Decimal128
 
     @SerializedName("isVerified")
-    private boolean isVerified; // Thêm trường này nếu nó có trong JSON response
+    private boolean isVerified;
 
     @SerializedName("fullname")
     private String fullname;
@@ -36,13 +36,13 @@ public class User {
     private String image;
 
     @SerializedName("created_at")
-    private String createdAt; // Hoặc java.util.Date nếu bạn cấu hình Gson để parse Date
+    private String createdAt;
 
-    @SerializedName("relationship")
-    private String relationship; // Giữ lại nếu nó có trong response
+    @SerializedName("relationship") // Could be "parent", "child", "other"
+    private String relationship;
 
     @SerializedName("__v")
-    private int v; // Thêm trường này nếu nó có trong JSON response
+    private int v;
 
     public User() {
         // constructor mặc định
@@ -64,8 +64,8 @@ public class User {
     public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public BalanceDecimal128 getBalance() { return balance; } // Getter cho BalanceDecimal128
-    public void setBalance(BalanceDecimal128 balance) { this.balance = balance; } // Setter cho BalanceDecimal128
+    public BalanceDecimal128 getBalance() { return balance; }
+    public void setBalance(BalanceDecimal128 balance) { this.balance = balance; }
 
     public boolean isVerified() { return isVerified; }
     public void setVerified(boolean isVerified) { this.isVerified = isVerified; }
