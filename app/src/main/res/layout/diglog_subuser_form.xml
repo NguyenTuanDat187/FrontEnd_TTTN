@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="@drawable/dialog_background"
+    android:background="@color/white"
     android:fillViewport="true">
 
     <LinearLayout
@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Tiêu đề Dialog -->
         <TextView
             android:id="@+id/tvDialogTitle"
             android:layout_width="match_parent"
@@ -20,11 +19,10 @@
             android:text="Thêm Tài Khoản Phụ"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/mau_button"
             android:gravity="center_horizontal"
             android:layout_marginBottom="24dp" />
 
-        <!-- Avatar và nút đổi ảnh -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,8 +49,6 @@
                 android:textColor="@color/mau_button" />
         </LinearLayout>
 
-
-        <!-- 🔤 Họ tên -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,9 +58,9 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxBackgroundColor="@color/mau_item"
-            app:hintTextColor="@color/gray"
-            app:boxStrokeColor="@color/mau_button">
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/light_hint"
+            app:boxStrokeColor="@color/mau_edittext">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editFullName"
@@ -72,11 +68,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Họ tên thành viên"
                 android:inputType="textPersonName"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
+                android:textColor="@color/default_text_color"
+                android:textColorHint="@color/light_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 📞 Số điện thoại -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,9 +81,9 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxBackgroundColor="@color/mau_item"
-            app:hintTextColor="@color/gray"
-            app:boxStrokeColor="@color/mau_button">
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/light_hint"
+            app:boxStrokeColor="@color/mau_edittext">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editSubPhone"
@@ -96,11 +91,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Số điện thoại"
                 android:inputType="phone"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
+                android:textColor="@color/default_text_color"
+                android:textColorHint="@color/light_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 🔐 Mật khẩu -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutSubPassword"
             android:layout_width="match_parent"
@@ -112,9 +106,9 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxBackgroundColor="@color/mau_item"
-            app:hintTextColor="@color/gray"
-            app:boxStrokeColor="@color/mau_button">
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/light_hint"
+            app:boxStrokeColor="@color/mau_edittext">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editSubPassword"
@@ -122,11 +116,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Mật khẩu"
                 android:inputType="textPassword"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
+                android:textColor="@color/default_text_color"
+                android:textColorHint="@color/light_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 🔒 Xác nhận Mật khẩu -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutConfirmSubPassword"
             android:layout_width="match_parent"
@@ -138,9 +131,9 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxBackgroundColor="@color/mau_item"
-            app:hintTextColor="@color/gray"
-            app:boxStrokeColor="@color/mau_button">
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/light_hint"
+            app:boxStrokeColor="@color/mau_edittext">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editConfirmSubPassword"
@@ -148,12 +141,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Xác nhận mật khẩu"
                 android:inputType="textPassword"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
+                android:textColor="@color/default_text_color"
+                android:textColorHint="@color/light_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <!-- Nút Lưu và Hủy -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -186,7 +177,7 @@
                 android:text="Lưu"
                 android:textAllCaps="false"
                 android:textSize="16sp"
-                android:textColor="@android:color/white"
+                android:textColor="@color/white"
                 android:padding="14dp"
                 app:cornerRadius="16dp" />
         </LinearLayout>

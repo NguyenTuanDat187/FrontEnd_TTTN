@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:padding="12dp">
+    android:background="@color/mau_nen" android:padding="12dp">
 
     <LinearLayout
         android:id="@+id/layoutCreatePost"
@@ -24,22 +23,24 @@
             android:layout_height="40dp"
             android:src="@drawable/taikhoan"
             android:scaleType="centerCrop"
-            android:background="@drawable/bg_circle_blue"
-            android:layout_marginEnd="12dp" />
+            android:background="@drawable/bg_circle_blue" android:layout_marginEnd="12dp" />
 
         <TextView
             android:id="@+id/textViewCreatePost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bạn đang nghĩ gì?"
-            android:textColor="@color/gray"
-            android:textSize="15sp"
-            android:background="@drawable/bg_dialog_rounded"
-            android:padding="10dp"
+            android:textColor="@color/light_hint" android:textSize="15sp"
+            android:background="@drawable/bg_dialog_rounded" android:padding="10dp"
             android:gravity="center_vertical" />
     </LinearLayout>
 
-    ---
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"/>
 
     <ProgressBar
         android:id="@+id/postsLoadingProgressBar"
@@ -47,7 +48,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:visibility="gone" /> ---
+        android:visibility="gone"
+        android:indeterminateTint="@color/mau_button" /> <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gray"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCommunityPosts"

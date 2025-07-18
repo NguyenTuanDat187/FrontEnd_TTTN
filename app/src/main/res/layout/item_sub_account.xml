@@ -7,57 +7,47 @@
     android:layout_marginHorizontal="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/white"> <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageSubAvatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/taikhoan"
+        android:background="@drawable/bg_avatar_circle"
+        android:scaleType="centerCrop"
+        android:padding="2dp"
+        android:contentDescription="Avatar phụ"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textSubName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:text="Nguyễn Văn B"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/mau_button" app:layout_constraintStart_toEndOf="@id/imageSubAvatar"
+        app:layout_constraintTop_toTopOf="@id/imageSubAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginStart="12dp" />
 
-        <!-- Avatar -->
-        <ImageView
-            android:id="@+id/imageSubAvatar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/taikhoan"
-            android:background="@drawable/bg_avatar_circle"
-            android:scaleType="centerCrop"
-            android:padding="2dp"
-            android:contentDescription="Avatar phụ"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/textSubPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="SĐT: 0123456789"
+        android:textSize="14sp"
+        android:textColor="@color/default_text_color" app:layout_constraintTop_toBottomOf="@id/textSubName"
+        app:layout_constraintStart_toStartOf="@id/textSubName"
+        app:layout_constraintEnd_toEndOf="@id/textSubName"
+        android:layout_marginTop="2dp" />
 
-        <!-- Họ tên -->
-        <TextView
-            android:id="@+id/textSubName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Nguyễn Văn B"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/imageSubAvatar"
-            app:layout_constraintTop_toTopOf="@id/imageSubAvatar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginStart="12dp" />
-
-        <!-- Số điện thoại -->
-        <TextView
-            android:id="@+id/textSubPhone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="SĐT: 0123456789"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/textSubName"
-            app:layout_constraintStart_toStartOf="@id/textSubName"
-            app:layout_constraintEnd_toEndOf="@id/textSubName"
-            android:layout_marginTop="2dp" />
-
-        <!-- Quan hệ -->
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

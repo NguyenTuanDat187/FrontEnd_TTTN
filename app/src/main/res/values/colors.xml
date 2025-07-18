@@ -1,36 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Màu chính -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="gray">#BDBDBD</color>
-    <color name="red">#E53935</color>
-
-    <!-- Màu thương hiệu -->
-    <color name="purple_200">#B388FF</color>
+    <color name="mau_nen">#EEE0FF</color>
+    <color name="mau_fragment">#C2BAE3</color>
+    <color name="mau_button">#722DD3</color>
     <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
-
-    <!-- Màu nhấn -->
+    <color name="mau_edittext">#9056E2</color>
     <color name="blue">#1E88E5</color>
     <color name="blue_dark">#1565C0</color>
-
-    <!-- Màu nền dialog -->
-    <color name="dialogBackground">#FFFFFF</color>
-    <color name="dialogBorder">#E0E0E0</color>
-
-    <!-- Màu nút -->
-
-    <color name="green_completed">#4CAF50</color> <!-- Một màu xanh lá cây đẹp -->
-    <color name="default_text_color">#000000</color>
-    <color name="light_hint">#777777</color>
-    <color name="mau_nen">#EEE0FF</color>
-    <color name="mau_button">#722DD3</color>
-    <color name="mau_fragment">#C2BAE3</color>
+    <color name="red">#E53935</color>
+    <color name="green_completed">#4CAF50</color>
     <color name="mau_item">#F4BCBC</color>
-    <color name="mau_edittext">#9056E2</color>
-
-    //
-
-
-</resources>
+    <color name="default_text_color">#000000</color>
+    <color name="light_hint">#777777</color>          </resources>

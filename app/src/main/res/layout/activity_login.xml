@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="@color/mau_nen"
+    android:background="@color/mau_nen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -20,7 +19,7 @@
             android:text="Đăng nhập"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/mau_button"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp" />
@@ -30,13 +29,20 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email">
+            android:hint="Email"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="@color/mau_edittext"
+            app:hintTextColor="@color/light_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtLoginEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/default_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -46,16 +52,22 @@
             android:layout_height="wrap_content"
             android:hint="Mật khẩu"
             android:layout_marginTop="16dp"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="@color/mau_edittext"
+            app:hintTextColor="@color/light_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtLoginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/default_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Hàng chứa checkbox và quên mật khẩu -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,8 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="Ghi nhớ đăng nhập"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textColor="@color/default_text_color"
+                android:textSize="14sp"
+                android:buttonTint="@color/blue" />
 
             <TextView
                 android:id="@+id/txtForgotPassword"
@@ -79,12 +92,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="Quên mật khẩu?"
-                android:textColor="@color/black"
+                android:textColor="@color/blue"
                 android:textSize="14sp"
                 android:gravity="end" />
         </LinearLayout>
 
-        <!-- ✅ Sửa đúng đây: Button Login -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -101,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chưa có tài khoản? Đăng ký ngay"
-            android:textColor="@color/black"
+            android:textColor="@color/blue"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="20dp"

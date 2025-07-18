@@ -4,15 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/mau_nen">
 
-    <!-- Nội dung chính -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
-        <!-- 🔍 Thanh tìm kiếm -->
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
@@ -22,12 +20,13 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:iconifiedByDefault="false"
-            android:background="@drawable/bg_searchview"/>
+            android:background="@drawable/bg_searchview"
+            android:backgroundTint="@color/white"
+            app:queryBackground="@android:color/transparent"
+            app:searchIcon="@drawable/bg_searchview"
+            android:textColorHint="@color/light_hint"
+            android:textColor="@color/default_text_color" />
 
-
-        <!-- 🧒 Tiêu đề -->
-
-        <!-- 🧾 RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerChildren"
             android:layout_width="match_parent"
@@ -35,19 +34,18 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:scrollbars="vertical"
-            android:paddingBottom="80dp" /> <!-- Chừa chỗ cho FAB -->
+            android:paddingBottom="80dp" />
     </LinearLayout>
 
-    <!-- ➕ Floating Action Button thêm trẻ -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddChild"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="Thêm trẻ mới"
         android:src="@drawable/them"
-    app:backgroundTint="@color/mau_button"
-    app:tint="@android:color/white"
-    android:layout_margin="16dp"
-    app:layout_anchorGravity="bottom|end"
-    android:layout_gravity="bottom|end" />
+        app:backgroundTint="@color/mau_button"
+        app:tint="@color/white"
+        android:layout_margin="16dp"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_gravity="bottom|end" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

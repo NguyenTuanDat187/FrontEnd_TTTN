@@ -8,7 +8,6 @@
     android:background="@drawable/bg_dialog_rounded"
     android:gravity="center_horizontal">
 
-    <!-- Tiêu đề -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -16,20 +15,18 @@
         android:text="Nhập mã OTP"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/mau_button"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Email mô tả -->
     <TextView
         android:id="@+id/tvEmailSent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mã OTP đã được gửi tới email:"
-        android:textColor="@color/black"
+        android:textColor="@color/default_text_color"
         android:textSize="14sp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Nhập mã OTP -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutOtp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -40,8 +37,9 @@
         app:boxCornerRadiusTopEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
         app:boxCornerRadiusBottomEnd="12dp"
-        app:boxStrokeColor="@color/black"
-        app:boxStrokeErrorColor="@color/red">
+        app:boxStrokeColor="@color/mau_edittext"
+        app:boxStrokeErrorColor="@color/red"
+        app:hintTextColor="@color/light_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtOtp"
@@ -49,21 +47,20 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLength="6"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="@color/default_text_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Nút xác minh -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnVerifyOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Xác minh"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/mau_button"
         android:textColor="@color/white"
         app:cornerRadius="24dp" />
 
-    <!-- Gửi lại -->
     <TextView
         android:id="@+id/txtResendOtp"
         android:layout_width="wrap_content"
@@ -75,7 +72,6 @@
         android:layout_marginTop="12dp"
         android:layout_gravity="center_horizontal" />
 
-    <!-- Các nút ở dưới cùng -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HUỶ"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/red"
             android:textStyle="bold"
             android:paddingEnd="24dp"
             android:textSize="14sp"/>
@@ -98,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="XÁC NHẬN"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/blue"
             android:textStyle="bold"
             android:textSize="14sp"/>
     </LinearLayout>

@@ -7,81 +7,72 @@
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="6dp"
-    app:cardBackgroundColor="@android:color/white">
+    app:cardBackgroundColor="@color/white"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/imgChild"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_circle_blue" android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/taikhoan"
+        android:contentDescription="Child's profile picture" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:id="@+id/imgChild"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/bg_circle_blue"
-            android:padding="2dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/taikhoan"
-            android:contentDescription="Child's profile picture" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvChildName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tên trẻ"
-                android:textColor="@android:color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Loại nhắc: Ăn uống"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/tvDateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="20/06/2025 - 08:30"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tvRepeat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Lặp lại: Hàng ngày"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-        </LinearLayout>
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvComplete"
+            android:id="@+id/tvChildName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_dialog_rounded"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp"
-            android:text="Hoàn thành"
-            android:textColor="@color/mau_button"
-            android:textSize="14sp" />
+            android:text="Tên trẻ"
+            android:textColor="@color/mau_button" android:textSize="19sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tvType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loại nhắc: Ăn uống"
+            android:textColor="@color/default_text_color" android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/tvDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20/06/2025 - 08:30"
+            android:textColor="@color/default_text_color" android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Lặp lại: Hàng ngày"
+            android:textColor="@color/light_hint" android:textSize="16sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_dialog_rounded" android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:text="Hoàn thành"
+        android:textColor="@color/green_completed" android:textSize="14sp" />
+
+</LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -6,19 +6,21 @@
     android:padding="24dp"
     android:gravity="center"
     android:background="@drawable/dialog_background"
-    android:elevation="4dp"> <ProgressBar
-    android:id="@+id/progress_bar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:indeterminateTint="?attr/colorPrimary"
-    android:layout_marginBottom="16dp"/>
+    android:elevation="4dp">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/mau_button"
+        android:layout_marginBottom="16dp"/>
 
     <TextView
         android:id="@+id/loading_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Đang xử lý..."
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/default_text_color"
         android:textAppearance="?attr/textAppearanceBody1"/>
 
 </LinearLayout>

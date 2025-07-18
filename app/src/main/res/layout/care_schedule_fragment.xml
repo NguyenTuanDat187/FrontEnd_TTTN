@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/mau_nen"
     android:padding="16dp">
 
-<!--    &lt;!&ndash; 🧭 Toolbar &ndash;&gt;-->
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@color/mau_nen"-->
-<!--        android:title="Lịch chăm sóc"-->
-<!--        android:titleTextColor="@android:color/black"-->
-<!--        android:elevation="4dp"-->
-<!--        app:titleTextAppearance="@style/TextAppearance.AppCompat.Large"/>-->
-
-    <!-- 🔍 Thanh tìm kiếm -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
@@ -29,9 +16,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:iconifiedByDefault="false"
-        android:background="@drawable/bg_searchview"/>
+        android:background="@drawable/bg_searchview"
+        android:backgroundTint="@color/white"
+        app:queryBackground="@android:color/transparent"
+        app:searchIcon="@drawable/bg_searchview"
+        android:textColorHint="@color/light_hint"
+        android:textColor="@color/default_text_color" />
 
-    <!-- 🧾 Danh sách lịch chăm sóc -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCareList"
         android:layout_width="match_parent"
@@ -41,7 +32,6 @@
         android:scrollbars="vertical"
         android:paddingBottom="80dp"/>
 
-    <!-- ➕ Nút thêm lịch chăm sóc -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddCare"
         android:layout_width="wrap_content"
@@ -50,6 +40,6 @@
         android:layout_margin="16dp"
         android:contentDescription="Thêm lịch"
         app:srcCompat="@drawable/them"
-        android:tint="@android:color/white"
+        app:tint="@color/white"
         app:backgroundTint="@color/mau_button"/>
 </LinearLayout>

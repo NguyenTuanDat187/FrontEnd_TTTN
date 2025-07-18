@@ -3,80 +3,85 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mau_nen">
+    android:background="@color/mau_nen"> <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            app:cardBackgroundColor="@color/white" app:cardElevation="4dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="16dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/mau_nen"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="16dp"> <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp"       android:backgroundTint="@color/mau_nen"
+                android:padding="12dp"
                 android:layout_margin="12dp"
-                android:elevation="4dp"
-                android:clipToPadding="false"
-                android:background="@drawable/bg_dialog_rounded">
+                android:elevation="0dp" android:clipToPadding="false"
+                android:background="@drawable/bg_dialog_rounded"> <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/taikhoan"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:padding="2dp"
+                    android:contentDescription="Avatar" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
 
-                    <ImageView
-                        android:id="@+id/imageAvatar"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/taikhoan"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_avatar_circle"
-                        android:padding="2dp"
-                        android:contentDescription="Avatar" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp"> <TextView
+                    <TextView
                         android:id="@+id/textUserName"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Nguyễn Văn A"
                         android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:singleLine="true"   android:ellipsize="end" />  <TextView
-                        android:id="@+id/textEmail"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Email: chinh@example.com"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp"
-                        android:singleLine="true"   android:ellipsize="end" />  <TextView
-                        android:id="@+id/textPhone"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="SĐT: 0987654321"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:layout_marginTop="2dp"
-                        android:singleLine="true"   android:ellipsize="end" />  </LinearLayout>
+                        android:textColor="@color/mau_button" android:textSize="20sp"
+                        android:singleLine="true"
+                        android:ellipsize="end" />
 
+                    <TextView
+                        android:id="@+id/textEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Email: chinh@example.com"
+                        android:textColor="@color/default_text_color" android:textSize="14sp"
+                        android:layout_marginTop="4dp"
+                        android:singleLine="true"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/textPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SĐT: 0987654321"
+                        android:textColor="@color/default_text_color" android:textSize="14sp"
+                        android:layout_marginTop="2dp"
+                        android:singleLine="true"
+                        android:ellipsize="end" />
                 </LinearLayout>
+            </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,8 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="✏️ Chỉnh sửa"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textColor="@color/blue" android:textSize="14sp"
                         android:padding="8dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
@@ -102,8 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🔒 Đổi mật khẩu"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textColor="@color/blue" android:textSize="14sp"
                         android:padding="8dp"
                         android:layout_marginStart="16dp"
                         android:background="?attr/selectableItemBackground"
@@ -116,8 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🚪 Đăng xuất"
-                    android:textColor="@color/design_default_color_error"
-                    android:textStyle="bold"
+                    android:textColor="@color/red" android:textStyle="bold"
                     android:textSize="14sp"
                     android:padding="8dp"
                     android:layout_marginTop="12dp"
@@ -125,33 +127,31 @@
                     android:clickable="true"
                     android:focusable="true" />
             </LinearLayout>
-            </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tài khoản phụ"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp" />
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tài khoản phụ"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/mau_button" android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerSubAccounts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="24dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerSubAccounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="24dp" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/mau_nen"/>
-
-        </LinearLayout>
-    </ScrollView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"/> </LinearLayout>
+</ScrollView>
 </FrameLayout>

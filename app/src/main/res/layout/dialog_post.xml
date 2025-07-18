@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="@color/white"
         android:layout_margin="0dp">
 
         <LinearLayout
@@ -26,47 +26,56 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"> <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgAvatar"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:src="@drawable/taikhoan"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="User Avatar"
-                /> <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:id="@+id/tvUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Họ và tên"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/black"
-                    android:textAppearance="?attr/textAppearanceSubtitle1" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/taikhoan"
+                    android:scaleType="centerCrop"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="User Avatar" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Chế độ hiển thị"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:endIconMode="dropdown_menu"
-                    android:layout_marginTop="2dp"
-                    android:minWidth="150dp"> <AutoCompleteTextView
-                    android:id="@+id/spinnerVisibility"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
-                    android:background="@android:color/transparent" /> </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="vertical"
+                    android:layout_weight="1">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Họ và tên"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/mau_button"
+                        android:textAppearance="?attr/textAppearanceSubtitle1" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Chế độ hiển thị"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        app:endIconMode="dropdown_menu"
+                        android:layout_marginTop="2dp"
+                        android:minWidth="150dp"
+                        app:boxStrokeColor="@color/mau_edittext"
+                        app:hintTextColor="@color/light_hint">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerVisibility"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp"
+                            android:background="@android:color/transparent"
+                            android:textColor="@color/default_text_color" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -74,17 +83,22 @@
                 android:layout_height="wrap_content"
                 android:hint="Bạn đang nghĩ gì?"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_marginBottom="16dp"> <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtPostContent"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:gravity="top|start"
-                android:padding="12dp"
-                android:textSize="15sp"
-                android:inputType="textMultiLine"
-                android:scrollbars="vertical"
-                android:minLines="3"
-                android:maxLines="6" />
+                android:layout_marginBottom="16dp"
+                app:boxStrokeColor="@color/mau_edittext"
+                app:hintTextColor="@color/light_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPostContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="top|start"
+                    android:padding="12dp"
+                    android:textSize="15sp"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"
+                    android:minLines="3"
+                    android:maxLines="6"
+                    android:textColor="@color/default_text_color" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -94,16 +108,18 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                android:layout_marginBottom="16dp"/> <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📷 Chọn ảnh"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="18dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:iconTint="@color/blue"
-            android:textColor="@color/blue" />
+                android:layout_marginBottom="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelectImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📷 Chọn ảnh"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:iconTint="@color/blue"
+                android:textColor="@color/blue" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPostSubmit"
@@ -111,8 +127,8 @@
                 android:layout_height="wrap_content"
                 android:text="Đăng bài"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@color/blue"
-                android:textColor="@android:color/white"
+                android:backgroundTint="@color/mau_button"
+                android:textColor="@color/white"
                 app:cornerRadius="8dp" />
 
             <ProgressBar
@@ -121,7 +137,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:indeterminateTint="@color/mau_button" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -7,67 +7,54 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="6dp"
-    app:cardBackgroundColor="@android:color/white">
+    app:cardBackgroundColor="@color/white"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/imgChildAvatar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/taikhoan"
+        android:background="@drawable/bg_circle_blue" android:contentDescription="Ảnh đại diện" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <!-- Avatar -->
-        <ImageView
-            android:id="@+id/imgChildAvatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/taikhoan"
-            android:background="@drawable/bg_circle_blue"
-            android:contentDescription="Ảnh đại diện" />
-
-        <!-- Thông tin trẻ -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvChildName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvChildName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nguyễn Bé Na"
-                android:textSize="19sp"
+            android:text="Nguyễn Bé Na"
+            android:textSize="19sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@color/mau_button" /> <TextView
+        android:id="@+id/tvChildGender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giới tính: Nữ"
+        android:textSize="17sp"
+        android:textColor="@color/default_text_color" /> <TextView
+        android:id="@+id/tvChildDOB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngày sinh: 20/02/2020"
+        android:textSize="17sp"
+        android:textColor="@color/default_text_color" /> <TextView
+        android:id="@+id/tvCreatedAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thêm lúc: 01/06/2025"
+        android:textSize="15sp"
+        android:textColor="@color/light_hint" /> </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvChildGender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Giới tính: Nữ"
-                android:textSize="17sp"
-            android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tvChildDOB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ngày sinh: 20/02/2020"
-                android:textSize="17sp"
-            android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tvCreatedAt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thêm lúc: 01/06/2025"
-                android:textSize="15sp"
-            android:textColor="@color/black" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+</LinearLayout>
 </androidx.cardview.widget.CardView>
