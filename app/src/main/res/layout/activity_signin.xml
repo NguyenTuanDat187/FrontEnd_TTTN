@@ -36,15 +36,7 @@
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxStrokeColor="@color/mau_edittext"
-            app:hintTextColor="@color/light_hint">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:textColor="@color/default_text_color" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:hintTextColor="@color/light_hint"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutEmail"

@@ -288,6 +288,8 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
             Log.w(TAG, "formatDate: Raw date is null or empty.");
             return "";
         }
+
+        // Các định dạng có thể xuất hiện từ MongoDB ISODate
         SimpleDateFormat[] parsers = {
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
@@ -298,23 +300,26 @@ public class Post_ADAPTER extends RecyclerView.Adapter<Post_ADAPTER.PostViewHold
         for (SimpleDateFormat parser : parsers) {
             try {
                 parser.setLenient(false);
+                parser.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Parse đúng múi giờ gốc là UTC
                 date = parser.parse(rawDate);
                 break;
-            } catch (ParseException e) {
-                // Tiếp tục thử định dạng khác
+            } catch (ParseException ignored) {
             }
         }
 
         if (date != null) {
+            // Hiển thị theo giờ Việt Nam
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            formatter.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // Chuyển sang giờ VN
             String formatted = formatter.format(date);
-            Log.d(TAG, "formatDate: Raw: '" + rawDate + "' -> Formatted: '" + formatted + "'");
+            Log.d(TAG, "formatDate: Raw: '" + rawDate + "' -> Formatted (VN): '" + formatted + "'");
             return formatted;
         } else {
-            Log.e(TAG, "formatDate: Could not parse date '" + rawDate + "' with any known format.");
+            Log.e(TAG, "formatDate: Không parse được ngày '" + rawDate + "'");
             return rawDate;
         }
     }
+
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
